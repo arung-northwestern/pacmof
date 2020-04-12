@@ -1,0 +1,142 @@
+language: python
+python:
+  - "3.6"
+install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda info -a
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
+  - source activate test-environment
+  # - pip install -r requirements.txt
+  - python setup.py install
+script:
+  - conda info --envs
+  - conda list --name test-environment
+  - pytest -v pacmof/tests/
+
+
+
+# language: python
+
+# # Run jobs on container-based infrastructure, can be overridden per job
+
+# matrix:
+#   include:
+#     # Extra includes for OSX since python language is not available by default on OSX
+#     - os: osx
+#       language: generic
+#       env: PYTHON_VER=3.6
+#     # - os: osx
+#     #   language: generic
+#     #   env: PYTHON_VER=3.7
+
+
+#     - os: linux
+#       language: generic  # No need to set Python version since its conda
+#       env: PYTHON_VER=3.6
+#     # - os: linux
+#     #   language: generic
+#     #   env: PYTHON_VER=3.7
+
+
+# before_install:
+#     # Additional info about the build
+#   - uname -a
+#   - df -h
+#   - ulimit -a
+
+#     # Install the Python environment
+#   - source devtools/travis-ci/before_install.sh
+#   - python -V
+
+# install:
+
+#     # Create test environment for package
+#   - python devtools/scripts/create_conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/test_env.yaml
+#     # Activate the test environment
+#   - conda activate test
+#     # Build and install package
+#   - python setup.py develop
+
+
+# script:
+#   - pytest -v --cov=pyIsoP pyIsoP/tests/
+
+# notifications:
+#     email: false
+
+# after_success:
+#   - codecov
+# language: python
+
+# # Run jobs on container-based infrastructure, can be overridden per job
+# #dist: trusty
+
+# matrix:
+#   include:
+#     # Extra includes for OSX since python language is not available by default on OSX
+#     # - os: linux
+#     #   python: 3.5
+#     #   env: PYTHON_VER=3.5
+#     - os: linux
+#   #    python: 3.6
+#   #    env: PYTHON_VER=3.6
+
+#     # - os: osx
+#     #   language: generic
+#     #   env: PYTHON_VER=3.5
+#     - os: osx
+#     #  language: python
+#  #     env: PYTHON_VER=3.6
+
+# # before_install:
+# #     # Additional info about the build
+# #   - uname -a
+# #   - df -h
+# #   - ulimit -a
+
+#     # Install the Python environment
+#   - source devtools/travis-ci/before_install.sh
+#  - python -V
+
+# install:
+  
+#   # - sudo apt-get update
+#   # - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+#   # - bash miniconda.sh -b -p $HOME/miniconda
+#   # - export PATH="$HOME/miniconda/bin:$PATH"
+#   # - hash -r
+#   # - conda config --set always_yes yes --set changeps1 no
+#   # - conda update -q conda
+#   # - conda info -a
+#   # - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
+#   # - conda update -q --all
+#   # - source activate test-environment
+
+#     Create test environment for package
+#   - conda create -n test python=$PYTHON_VER pip pytest pytest-cov
+#   - conda activate test
+
+#     # Install pip only modules
+#   # - pip install pyIsoP
+#   # - pip install -r requirements.txt
+#   - python setup.py develop
+#   - pip install codecov
+
+#     # Build and install package
+#   # - conda build --python=$PYTHON_VER devtools/conda-recipe
+#   # - conda install --use-local pyIsoP
+
+
+# script:
+#   - pytest -v pyIsoP/tests/
+
+# notifications:
+#     email: false
+
+# after_success:
+#   - codecov
