@@ -29,7 +29,8 @@ About the pre-trained Random Forest model in PACMOF
 
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
-    :width: 600
+    :width: 400
+    :height: 300
 
 
 
@@ -76,7 +77,7 @@ is to use python's built-in help(function_name) utility.
     data = pacmof.get_charges_single(files[0], create_cif=True, path_to_output_dir='.', add_string='_charged', use_default_model=True)
 
     # 2. To compute the partial charges on a list of CIFs but on a single CPU on by one 
-    # (not recommended  for high-throughput applications).
+    # Not recommended  for high-throughput applications.
     data = pacmof.get_charges_multiple_serial(files, create_cif=True, path_to_output_dir='.', add_string='_charged', use_default_model=True)
 
     # 3. To compute the partial charges on a the list of CIFs (Dask automatically chooses between threading (1 CPU) or multi-processing (on HPC)). 
@@ -92,8 +93,8 @@ is to use python's built-in help(function_name) utility.
     client= Client(cluster)
 
 
-    # 4. To get the just features without loading the pre-trained machine larning model or predicting charges
-    # This could be useful for training your own machine larning model.
+    # 4. To get just the features without loading the pre-trained machine larning model or predicting charges
+    # This could be useful for training your own machine learning model.
     data = pacmof.get_features_from_cif(files[0])
 
     # Note: To use a different machine learning model, persist it in a pickle file (.pkl) and use the path_to_pickle_obj argument with 'use_default_model' argument set to False.
