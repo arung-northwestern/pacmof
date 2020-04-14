@@ -64,13 +64,12 @@ What can PACMOF do...?
 ***********************
 
 Each of these functions return an ASE atoms object where the features for machine learning are updated under data.info['features'] 
-and the charges are updated under data.info['_atom_site_charges']. One easy way get the info on all the pacmof function arguments 
+and the charges are updated under data.info['_atom_site_charges']. One easy way get the info on all the PACMOF function arguments 
 is to use python's built-in help(function_name) utility.
 
-.. code-block::python
+.. code-block:: python
 
     import pacmof, glob
-
     files = glob.glob('*.cif') # Get a list of CIF files
     
     # 1. To compute the partial charges on one material. 
