@@ -63,8 +63,6 @@ Currently, please clone from github_
 What can PACMOF do...?
 ***********************
 
-Case 1: Using PACMOF to predict partial charges using the (or any) pre-trained model.
--------------------------------------------------------------------------------------
 Each of these functions return an ASE atoms object where the features for machine learning are updated under data.info['features'] 
 and the charges are updated under data.info['_atom_site_charges']. One easy way get the info on all the pacmof function arguments 
 is to use python's built-in help(function_name) utility.
