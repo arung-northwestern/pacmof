@@ -24,7 +24,7 @@ first coordination shell are by far the most important features when it comes to
     :width: 600
 
 About the pre-trained Random Forest model in PACMOF
-**************************************
+****************************************************
 
 
 
