@@ -116,13 +116,13 @@ Copyright (c) 2020, Snurr Research Group, Northwestern University
 
 ### Developers
 
-    Srinivasu Kancharlapalli, Visiting Scholar Snurr Group (2018-2020), Bhaba Atomic Research Center.
+    Srinivasu Kancharlapalli, Fulbright-Nehru Postdoctoral Research Scholar, Snurr Group (2018-2020), Bhabha Atomic Research Centre.
 
     Arun Gopalan, Ph.D. Scholar, Snurr Group (2015-2020)
 
 #### Acknowledgements
         
-    This work is supported by the U.S. Department of Energy, Office of Basic 
+    This work is supported by Fulbright-Nehru Postdoctoral Research Fellowship & the U.S. Department of Energy, Office of Basic 
     Energy Sciences, Division of Chemical Sciences, Geosciences and 
     Biosciences through the Nanoporous Materials Genome Center under award 
     DE-FG02-17ER16362.
