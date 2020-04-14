@@ -16,7 +16,7 @@ def get_features_from_cif(path_to_cif):
 	:param path_to_cif: path to the cif file as input`
 	:raises: None
 
-	:rtype: ASE atoms object and the feature array of shape (number_of_atoms, 6)
+	:rtype: ASE atoms object with feature array of shape (number_of_atoms, 6) updated under atoms.info['features']
 	"""
 
 
@@ -29,6 +29,11 @@ def get_features_from_cif(path_to_cif):
 		indices= indices[indices!=i] # * Remove self
 		return indices.tolist(), np.mean(distances[indices])
 
+	def find_neighors_dask(flag):
+		import dask.array as da 
+		func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
+		return func_dict[flag](i,data)
+		
 	# * Small Z 
 	def find_neighbors_smallZ(i, atoms):
 
@@ -220,7 +225,7 @@ def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', a
 
 	:raises:
 
-	:rtype: an ase atoms object with charges added as atoms.info['_atom_site_charges']
+	:rtype: an ase atoms object with the partial charges added as atoms.info['_atom_site_charges']
 	"""
 
 	import numpy as np 

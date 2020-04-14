@@ -11,12 +11,12 @@ install:
   - conda info -a
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
   - source activate test-environment
-  # - pip install -r requirements.txt
+  - pip install -r requirements.txt
   - python setup.py install
 script:
   - conda info --envs
   - conda list --name test-environment
-  - pytest -v pacmof/tests/
+  # - pytest -v pacmof/tests/
 
 
 
