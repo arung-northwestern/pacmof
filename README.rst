@@ -21,7 +21,8 @@ Among these features, we found that the elemental electronegativity and the aver
 first coordination shell are by far the most important features when it comes to predicting partial charges.
 
 .. figure:: ./docs/images/Feature_importance_final.jpg
-    :width: 300
+    :width: 100
+    :height: 100
 
 About the pre-trained Random Forest model in PACMOF
 ****************************************************
@@ -29,8 +30,8 @@ About the pre-trained Random Forest model in PACMOF
 
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
-    :width: 300
-    :height: 300
+    :width: 100
+    :height: 100
 
 
 
