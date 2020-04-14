@@ -37,7 +37,7 @@ About the pre-trained Random Forest model in PACMOF
 Installing PACMOF
 ***********************
 
-PyIsoP is deployed on PyPI_ , we can install it easily using pip_ 
+PyIsoP will deployed on PyPI_ soon, then we can install it easily using pip_ 
 
 .. code-block:: bash
 
@@ -50,7 +50,7 @@ PyIsoP is deployed on PyPI_ , we can install it easily using pip_
 
 .. Tip: Use "--override-channel" option for faster environment resolution.
 
-or clone from github_
+Currently, please clone from github_
 
 .. code-block:: bash
 
@@ -65,25 +65,46 @@ What can PACMOF do...?
 
 Case 1: Using PACMOF to predict partial charges using the (or any) pre-trained model.
 -------------------------------------------------------------------------------------
-One easy way get all the needed info about pacmof is use python's built-in help() function.
+Each of these functions return an ASE atoms object where the features for machine learning are updated under data.info['features'] 
+and the charges are updated under data.info['_atom_site_charges']. One easy way get the info on all the pacmof function arguments 
+is to use python's built-in help(function_name) utility.
 
 .. code-block::python
 
-    import pacmof as pac 
-    help(pacmof)
+    import pacmof, glob
+
+    files = glob.glob('*.cif') # Get a list of CIF files
     
-PACMOF includes built-in functions to compute partial charges in a single or for a list of CIFs files using the 
-pre-trained Random forest model using just a few lines of code.
+    # 1. To compute the partial charges on one material. 
+    data = pacmof.get_charges_single(files[0], create_cif=True, path_to_output_dir='.', add_string='_charged', use_default_model=True)
 
-.. code-block:: python
+    # 2. To compute the partial charges on a list of CIFs but on a single CPU on by one 
+    # (not recommended  for high-throughput applications).
+    data = pacmof.get_charges_multiple_serial(files, create_cif=True, path_to_output_dir='.', add_string='_charged', use_default_model=True)
 
-    import pacmof  as pac 
-    pac.get_charges_single(path_to_cif)
+    # 3. To compute the partial charges on a the list of CIFs (Dask automatically chooses between threading (1 CPU) or multi-processing (on HPC)). 
+    # Recommended for high-throughput screening applications.
+    data = pacmof.get_charges_multiple_parallel(files, create_cif=True, path_to_output_dir='.', add_string='_charged', use_default_model=True)
+
+    # Addendum : To use PACMOF on an HPC start a Dask cluster before you call the get_charges_multiple_parallel function from 3.
+    # To start a cluster use (more info for different schedulers other that SLURM can be found on dask.org website). 
+    from dask_jobqueue import SLURMCluster
+    from distributed import Client
+    cluster=SLURMCluster(cores=4, interface='ib0', project='p20XXX', queue='short', walltime='04:00:00', memory='100GB')
+    cluster.scale(10)
+    client= Client(cluster)
+
+
+    # 4. To get the just features without loading the pre-trained machine larning model or predicting charges
+    # This could be useful for training your own machine larning model.
+    data = pacmof.get_features_from_cif(files[0])
+
+    # Note: To use a different machine learning model, persist it in a pickle file (.pkl) and use the path_to_pickle_obj argument with 'use_default_model' argument set to False.
 
 
 
-Case 2: Using PACMOF to generate a dataset of features to train your own model 
-------------------------------------------------------------------------------
+Citing PACMOF  : Coming Soon!
+************** 
 
 
 

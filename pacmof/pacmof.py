@@ -24,7 +24,7 @@ def get_features_from_cif(path_to_cif):
 
 		import numpy as np 
 		distances = atoms.get_distances(i, slice(None), mic =True)
-		distances.sort()
+		distances = np.sort(distances)
 		indices = np.where( distances< distances[2])[0]
 		indices= indices[indices!=i] # * Remove self
 		return indices.tolist(), np.mean(distances[indices])
@@ -38,6 +38,7 @@ def get_features_from_cif(path_to_cif):
 		sum_radii = cov_radii[i]+cov_radii
 		indices = np.where( distances< (sum_radii+0.3) )[0]
 		indices= indices[indices!=i] # * Remove self
+		
 		return indices.tolist(), np.mean(distances[indices])
 
 	# * Large Z 
@@ -46,12 +47,12 @@ def get_features_from_cif(path_to_cif):
 		import numpy as np
 		from pymatgen.analysis.local_env import CrystalNN
 		from pymatgen.io import ase 
-
+		distances = atoms.get_distances(i, slice(None), mic =True)
 		mof       = ase. AseAtomsAdaptor.get_structure(atoms=atoms)	
 		nn_object = CrystalNN(x_diff_weight=0, distance_cutoffs=(0.3, 0.5))
 		local_env = nn_object.get_nn_info(mof, i)
 		indices   = [local_env[index]['site_index'] for index in range(len(local_env))]
-		return indices, np.mean(atoms.get_distances(i,indices, mic=True))
+		return indices, np.mean(distances[indices])
 
 	# * Oxygens and nitrogen	
 	def find_neighbors_oxynitro(i, atoms):
@@ -143,10 +144,12 @@ def get_features_from_cif(path_to_cif):
 			'Ac': 5.170, 'Th': 6.307, 'Pa': 5.890, 'U': 6.194,
 			'Np': 6.266, 'Pu': 6.026, 'Am': 5.974, 'Cm': 5.991}
 	#pymatgent nearest neighbor to get local enveronment
-	
+	import pymatgen as pm
+	from pymatgen.io.ase import AseAtomsAdaptor 
 	from ase.io import read, write
-	data = read(path_to_cif)
-
+	# data = read(path_to_cif)
+	data_pm = pm.Structure.from_file(path_to_cif, primitive=False)
+	data = AseAtomsAdaptor.get_atoms(data_pm)
 	number_of_atoms = data.get_number_of_atoms()
 
 	cov_radii	      =np.array([radius[s] for s in data.get_chemical_symbols()])
@@ -162,49 +165,23 @@ def get_features_from_cif(path_to_cif):
 	func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
 
 	neighbor_list, avg_neighbor_dist = zip(*[func_dict[flags[i]](i,data) for i in range(number_of_atoms)])
-	
-	# oxygens = np.where(atomic_numbers==8)# or atomic_numbers==7)
-	# nitrogens = np.where(atomic_numbers==7)
-	# smallZ = np.where(atomic_numbers<7)
-	# largeZ = np.where(atomic_numbers>8)
-	
-	
-	# # * Find the neighbors and the average coordination distance of each group of atoms separately.
-	
-	# largeZ_neighbors, largeZ_avg_dist  = zip(*[find_neighbors_largeZ(i,data) for i in largeZ[0]])
-	# smallZ_neighbors, smallZ_avg_dist  = zip(*[find_neighbors_smallZ(i,data) for i in smallZ[0]])
-	# oxygens_neighbors, oxygens_avg_dist  = zip(*[find_neighbors_oxynitro(i,data) for i in oxygens[0]])
-	# nitrogens_neighbors, nitrogens_avg_dist  = zip(*[find_neighbors_oxynitro(i,data) for i in nitrogens[0]])
 
-	# # * Convert tuples to list for convenienct
-	# largeZ_neighbors, largeZ_avg_dist = list(largeZ_neighbors),  list(largeZ_avg_dist)
-	# smallZ_neighbors, smallZ_avg_dist = list(smallZ_neighbors),  list(smallZ_avg_dist)
-	# oxygens_neighbors, oxygens_avg_dist = list(oxygens_neighbors),  list(oxygens_avg_dist)
-	# nitrogens_neighbors, nitrogens_avg_dist = list(nitrogens_neighbors),  list(nitrogens_avg_dist)
-
-
-	# # * Create a large unsorted neighbhorlist (make sure to use the same order)
-	# nl_indices = np.concatenate((largeZ[0],smallZ[0], oxygens[0], nitrogens[0]))
-	# neighbor_list_unsrt = largeZ_neighbors + smallZ_neighbors + oxygens_neighbors + nitrogens_neighbors
-	# avg_dist_list_unsrt = largeZ_avg_dist + smallZ_avg_dist + oxygens_avg_dist + nitrogens_avg_dist
-
-	# #* Now sort the neighbor list
-	# neighbor_list_sorted = np.array(neighbor_list_unsrt)[np.argsort(nl_indices)]
-	# avg_dist_list_sorted = np.array(avg_dist_list_unsrt)[np.argsort(nl_indices)]
-
+	neighbor_list, avg_neighbor_dist = list(neighbor_list), list(avg_neighbor_dist)
 
 	#* Find all the atoms with no neighbors, hopefully there aren't any such atoms.
 	# * We have to use a for loop since Python's fancy indexing doesn't work so well on lists.
 	nl_length = [len(nl) for nl in neighbor_list]
-	no_neighbors = np.where(nl_length==0)[0]
+	no_neighbors = np.where(np.array(nl_length)==0)[0]
+	# print(len(no_neighbors))
 	for nn in no_neighbors:
-		neighbor_list[nn], avg_neighbor_dist[nn] = find_nearest2(nn,atoms)
-
-
+		# print(nn)
+		# temp1, temp2 = find_nearest2(nn,data)
+		neighbor_list[nn], avg_neighbor_dist[nn] = find_nearest2(nn,data)
 
 	# * We can use pandas to get values from the dictionary
 	enSeries = pd.Series(electronegativity)
 	ipSeries = pd.Series(first_ip)
+
 	# * Symbols for the neighbors
 	neighbor_symbols = [np.array(data.get_chemical_symbols())[nl] for nl in neighbor_list] 
 
@@ -213,7 +190,9 @@ def get_features_from_cif(path_to_cif):
 	average_ip_shell = [np.mean(ipSeries[ns].values) for ns in neighbor_symbols]
 
 	features = np.vstack((en_pauling, ionization_energy, nl_length, avg_neighbor_dist, average_en_shell, average_ip_shell)).T
-	return data, features # * Returns the ASE atoms object and the features array.
+	
+	data.info['features']=features
+	return data # * Returns the ASE atoms object and the features array.
 # %%
 def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
@@ -257,8 +236,8 @@ def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', a
 	else: 
 		model = joblib.load(path_to_pickle_obj)
 	print("Computing features...")
-	data, features= get_features_from_cif(path_to_cif)
-
+	data= get_features_from_cif(path_to_cif)
+	features = data.info['features']
 	print('Estimating charges...')
 	charges = model.predict(features)
 	# * Adjust the charges for neutrality
@@ -275,6 +254,7 @@ def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', a
 		path_to_cif = os.path.abspath(path_to_cif)
 		# new_filename = path_to_cif.split('.')[-2].split('/')[-1]+'_charged.cif'
 		new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+		path_to_output_dir = os.path.abspath(path_to_output_dir)
 		write_cif(path_to_output_dir+'\\'+new_filename, data)
 		# write_cif(path_to_output_dir+'/'+new_filename, data)
 	
@@ -474,18 +454,95 @@ def get_charges_multiple_serial(list_of_cifs,  create_cif=False, path_to_output_
 		model = joblib.load(path_to_pickle_obj)
 
 	print('Calculating the features for all the files...')
-	data_all, features_all = zip(*[get_features_from_cif(l) for l in tqdm(list_of_cifs)])
-	charges_all = [model.predict(f) for f in features_all]
-	print(len(data_all), len(features_all), len(charges_all))
+	data_all= [get_features_from_cif(l) for l in tqdm(list_of_cifs)]
+	# data_all = list(data_all)
+	charges_all = [model.predict(d.info['features']) for d in data_all]
+	# print(len(data_all), len(features_all), len(charges_all))
 	print('Estimating charges for all the files...')
+	for i in range(len(list_of_cifs)):
+			data_all[i].info['_atom_site_charge'] = charges_all[i]
 	# * Write the output cif files
 	if create_cif==True:
-		print('Writing new cif file...')
+		print('Writing new cif file...') 
 		for i in range(len(list_of_cifs)):
 			# print(i)
 			path_to_cif = os.path.abspath(list_of_cifs[i])
 			# data1 = data_all[i]
+			new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+			path_to_output_dir = os.path.abspath(path_to_output_dir)
+			write_cif(path_to_output_dir+'\\'+new_filename, data_all[i])
+	print("Done!")
+	return data_all
+
+# %%
+def get_charges_multiple_parallel(list_of_cifs,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
+
+	""" Description
+	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. This function is parallelized 
+	using Dask (both multiprocessing or on an HPC) for use in high-throuput applications. It is very fast, see the benchmarking on the Github page.
+
+	:type list_of_cifs: list
+	:param list_of_cifs: a list of paths to all the cif files to compute the charges for.
+
+	:type create_cif: bool
+	:param create_cif: Tells whether to create a new CIF with the 'add_string' added to the filename, that includes the new estimated _atom_site_charges
+
+	:type path_to_output_dir:string (path)
+	:param path_to_output_dir: Where to create the output cif file.
+
+	:type add_string: string
+	:param add_string: A string added to the filename to distinguish the output cif file from the original one.
+
+	:type use_default_model: bool
+	:param use_default_model: whether  to use the pre-trained model or not. If set to False you can set path to a different pickle file using 'path_to_pickle_obj'.
+
+	:type path_to_pickle_obj: string
+	:param path_to_pickle_obj: path to a pickle file containing the scikit-learn model one wants to use. Is used only if use_default_model is set to False.
+
+	:raises:
+
+	:rtype:  a list of ase atoms objects with charges added as atoms.info['_atom_site_charges'] to each atoms object
+	"""
+	
+	from tqdm import tqdm
+	import numpy as np 
+	import joblib
+	import os 
+
+	import dask.bag as db 
+	from dask.diagnostics import ProgressBar
+	# * Get the path of the pickle and load the model
+	print("Loading the model...")
+	if use_default_model==True:
+		this_dir, this_filename = os.path.split(__file__)
+		path_to_pickle_obj = os.path.join(this_dir, "data", "ML_Model_RF_HP_tuned.pkl")
+		# print(path_to_pickle_obj)
+		model = joblib.load(path_to_pickle_obj)
+	else: 
+		model = joblib.load(path_to_pickle_obj)
+
+	print('Calculating the features for all the files...')
+	
+	data_db = db.from_sequence(list_of_cifs).map(get_features_from_cif)
+	with ProgressBar():
+		data_all = data_db.compute()
+	# data_all= zip(*[get_features_from_cif(l) for l in tqdm(list_of_cifs)])
+	
+	
+	data_all = list(data_all)
+	charges_all = [model.predict(d.info['features']) for d in data_all]
+	# print(len(data_all), len(features_all), len(charges_all))
+	print('Estimating charges for all the files...')
+	for i in range(len(list_of_cifs)):
 			data_all[i].info['_atom_site_charge'] = charges_all[i]
+	# * Write the output cif files
+	if create_cif==True:
+		print('Writing new cif file...') 
+		for i in range(len(list_of_cifs)):
+			# print(i)
+			path_to_cif = os.path.abspath(list_of_cifs[i])
+			path_to_output_dir = os.path.abspath(path_to_output_dir)
+			# data1 = data_all[i]
 			new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
 			write_cif(path_to_output_dir+'\\'+new_filename, data_all[i])
 	print("Done!")
