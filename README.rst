@@ -36,7 +36,7 @@ About the pre-trained Random Forest model in PACMOF (Coming soon!)
 Installing PACMOF
 ***********************
 
-PyIsoP will deployed on PyPI_ soon, then we can install it easily using pip_ 
+PyIsoP will deployed on PyPI_ soon, after which we can install it easily using pip_ 
 
 .. code-block:: bash
 
@@ -49,7 +49,7 @@ PyIsoP will deployed on PyPI_ soon, then we can install it easily using pip_
 
 .. Tip: Use "--override-channel" option for faster environment resolution.
 
-Currently, please clone from github_
+As of now, please clone it from github_
 
 .. code-block:: bash
 
