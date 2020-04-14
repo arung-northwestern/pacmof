@@ -46,7 +46,7 @@ PyIsoP will deployed on PyPI_ soon, then we can install it easily using pip_
 .. _pip: https://pypi.org/project/pip/
 .. _PyPI: https://pypi.org/
 
-..    conda install -c conda-forge pyisop
+..    conda install -c conda-forge pyisop 
 
 .. Tip: Use "--override-channel" option for faster environment resolution.
 
@@ -120,8 +120,9 @@ Copyright (c) 2020, Snurr Research Group, Northwestern University
 
 ### Developers
 
-Srinivasu Kancharlapalli, Visiting Scholar Snurr Group (2018-2020), Bhaba Atomic Research Center.
-Arun Gopalan, Ph.D. Scholar, Snurr Group (2015-2020)
+    Srinivasu Kancharlapalli, Visiting Scholar Snurr Group (2018-2020), Bhaba Atomic Research Center.
+
+    Arun Gopalan, Ph.D. Scholar, Snurr Group (2015-2020)
 
 #### Acknowledgements
         
