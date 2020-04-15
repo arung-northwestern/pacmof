@@ -20,7 +20,7 @@ are used to describe every atom in a MOF. However, we chose a much simpler (yet 
 Among these features, we found that the elemental electronegativity and the average electronegativity of the 
 first coordination shell are by far the most important features when it comes to predicting partial charges.
 
-.. figure:: ./docs/images/Feature_importance_final.jpg
+.. image:: ./docs/images/Feature_importance_final.jpg
    :scale: 50 %
 
 
