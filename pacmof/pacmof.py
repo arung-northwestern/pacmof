@@ -29,10 +29,10 @@ def get_features_from_cif(path_to_cif):
 		indices= indices[indices!=i] # * Remove self
 		return indices.tolist(), np.mean(distances[indices])
 
-	def find_neighors_dask(flag):
-		import dask.array as da 
-		func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
-		return func_dict[flag](i,data)
+	# def find_neighors_dask(flag):
+	# 	import dask.array as da 
+	# 	func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
+	# 	return func_dict[flag](i,data)
 		
 	# * Small Z 
 	def find_neighbors_smallZ(i, atoms):
