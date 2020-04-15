@@ -6,11 +6,12 @@ Handles the primary functions
 """
 
 #%%
-def get_features_from_cif(path_to_cif):
+def get_features_from_cif_parallel(path_to_cif):
 
 	""" Description
 
-	Computes the features for any given CIF file.
+	Computes the features for any given CIF file. The resultant features are updated in the output ASE atoms object under atoms.info['features'].
+	The calculation is parallelized using Dask, hence, this function is recommended over the serial version, especially if the CIF file is large (>2000 atoms).
 
 	:type path_to_cif: string
 	:param path_to_cif: path to the cif file as input`
@@ -28,6 +29,11 @@ def get_features_from_cif(path_to_cif):
 		indices = np.where( distances< distances[2])[0]
 		indices= indices[indices!=i] # * Remove self
 		return indices.tolist(), np.mean(distances[indices])
+	
+	def use_correct_func(i,flags, atoms):
+		# This is a temporary function, I will map this over Dask to speed up the calc. of features.
+		func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
+		return func_dict[flags[i]](i, atoms)
 
 	# def find_neighors_dask(flag):
 	# 	import dask.array as da 
@@ -152,7 +158,9 @@ def get_features_from_cif(path_to_cif):
 	import pymatgen as pm
 	from pymatgen.io.ase import AseAtomsAdaptor 
 	from ase.io import read, write
+	from dask.diagnostics import ProgressBar
 	# data = read(path_to_cif)
+	print("Reading the CIF file...")
 	data_pm = pm.Structure.from_file(path_to_cif, primitive=False)
 	data = AseAtomsAdaptor.get_atoms(data_pm)
 	number_of_atoms = data.get_number_of_atoms()
@@ -167,6 +175,226 @@ def get_features_from_cif(path_to_cif):
 	# * Create a dictionary of functions for the different atomic number ranges
 	bins = [0,7,9,120]
 	flags = list(map(np.str, np.digitize(atomic_numbers, bins)))
+
+	print('Computing the features...')
+	import dask.bag as db
+	atom_ids =list(range(number_of_atoms))
+	atom_ids_db = db.from_sequence(atom_ids).map(use_correct_func, flags, data)
+	with ProgressBar():
+		output_from_dask = np.array(atom_ids_db.compute())
+	[neighbor_list, avg_neighbor_dist] = output_from_dask[:, 0], output_from_dask[:,1]
+
+	# func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
+
+	# neighbor_list, avg_neighbor_dist = zip(*[func_dict[flags[i]](i,data) for i in range(number_of_atoms)])
+
+	# neighbor_list, avg_neighbor_dist = list(neighbor_list), list(avg_neighbor_dist)
+
+	#* Find all the atoms with no neighbors, hopefully there aren't any such atoms.
+	# * We have to use a for loop since Python's fancy indexing doesn't work so well on lists.
+	nl_length = [len(nl) for nl in neighbor_list]
+	no_neighbors = np.where(np.array(nl_length)==0)[0]
+	# print(len(no_neighbors))
+	for nn in no_neighbors:
+		# print(nn)
+		# temp1, temp2 = find_nearest2(nn,data)
+		neighbor_list[nn], avg_neighbor_dist[nn] = find_nearest2(nn,data)
+
+	# * We can use pandas to get values from the dictionary
+	enSeries = pd.Series(electronegativity)
+	ipSeries = pd.Series(first_ip)
+
+	# * Symbols for the neighbors
+	neighbor_symbols = [np.array(data.get_chemical_symbols())[nl] for nl in neighbor_list] 
+
+
+	average_en_shell = [np.mean(enSeries[ns].values) for ns in neighbor_symbols]
+	average_ip_shell = [np.mean(ipSeries[ns].values) for ns in neighbor_symbols]
+
+	features = np.vstack((en_pauling, ionization_energy, nl_length, avg_neighbor_dist, average_en_shell, average_ip_shell)).T
+	
+	data.info['features']=features
+	return data # * Returns the ASE atoms object and the features array.
+# %%
+def get_features_from_cif_serial(path_to_cif):
+
+	""" Description
+
+	Computes the features for any given CIF file. The resultant features are updated in the output ASE atoms object
+	under atoms.info['features']. Feature calculation is done in serial, hence, use this function only for small CIF files (<2000 atoms) if at all 
+	one chooses to use it.
+
+	:type path_to_cif: string
+	:param path_to_cif: path to the cif file as input`
+	:raises: None
+
+	:rtype: ASE atoms object with feature array of shape (number_of_atoms, 6) updated under atoms.info['features']
+	"""
+
+
+	def find_nearest2(i, atoms):
+
+		import numpy as np 
+		distances = atoms.get_distances(i, slice(None), mic =True)
+		distances = np.sort(distances)
+		indices = np.where( distances< distances[2])[0]
+		indices= indices[indices!=i] # * Remove self
+		return indices.tolist(), np.mean(distances[indices])
+	
+	# def use_correct_func(i,flags, atoms):
+	# 	# This is a temporary function, I will map this over Dask to speed up the calc. of features.
+	# 	func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
+	# 	return func_dict[flags[i]](i, atoms)
+
+	# def find_neighors_dask(flag):
+	# 	import dask.array as da 
+	# 	func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
+	# 	return func_dict[flag](i,data)
+		
+	# * Small Z 
+	def find_neighbors_smallZ(i, atoms):
+
+		import numpy as np 
+
+		distances = atoms.get_distances(i, slice(None), mic =True)
+		sum_radii = cov_radii[i]+cov_radii
+		indices = np.where( distances< (sum_radii+0.3) )[0]
+		indices= indices[indices!=i] # * Remove self
+		
+		return indices.tolist(), np.mean(distances[indices])
+
+	# * Large Z 
+	def find_neighbors_largeZ(i, atoms):
+		
+		import numpy as np
+		from pymatgen.analysis.local_env import CrystalNN
+		from pymatgen.io import ase 
+		distances = atoms.get_distances(i, slice(None), mic =True)
+		mof       = ase. AseAtomsAdaptor.get_structure(atoms=atoms)	
+		nn_object = CrystalNN(x_diff_weight=0, distance_cutoffs=(0.3, 0.5))
+		local_env = nn_object.get_nn_info(mof, i)
+		indices   = [local_env[index]['site_index'] for index in range(len(local_env))]
+		return indices, np.mean(distances[indices])
+
+	# * Oxygens and nitrogen	
+	def find_neighbors_oxynitro(i, atoms):
+
+		import numpy as np 
+
+		distances = atoms.get_distances(i, slice(None), mic =True)
+		sum_radii = cov_radii[i]+cov_radii
+		indices = np.where( distances< (sum_radii+0.5) )[0]
+		indices= indices[indices!=i] # * Remove self
+		return indices.tolist(),np.mean(distances[indices])
+
+	import numpy as np
+	from pymatgen.analysis.local_env import CrystalNN
+	import pandas as pd
+
+	radius =  {'H': 0.31, 'He': 0.28, 'Li': 1.28, 'Be': 0.96,
+			'B': 0.84, 'C': 0.73, 'N': 0.71, 'O': 0.66,
+			'F': 0.57, 'Ne': 0.58, 'Na': 1.66, 'Mg': 1.41,
+			'Al': 1.21, 'Si': 1.11, 'P': 1.07, 'S': 1.05,
+			'Cl': 1.02, 'Ar': 1.06, 'K': 2.03, 'Ca': 1.76,
+			'Sc': 1.70, 'Ti': 1.60, 'V': 1.53, 'Cr': 1.39,
+			'Mn': 1.50, 'Fe': 1.42, 'Co': 1.38, 'Ni': 1.24,
+			'Cu': 1.32, 'Zn': 1.22, 'Ga': 1.22, 'Ge': 1.20,
+			'As': 1.19, 'Se': 1.20, 'Br': 1.20, 'Kr': 1.16,
+			'Rb': 2.20, 'Sr': 1.95, 'Y': 1.90, 'Zr': 1.75,
+			'Nb': 1.64, 'Mo': 1.54, 'Tc': 1.47, 'Ru': 1.46,
+			'Rh': 1.42, 'Pd': 1.39, 'Ag': 1.45, 'Cd': 1.44,
+			'In': 1.42, 'Sn': 1.39, 'Sb': 1.39, 'Te': 1.38,
+			'I': 1.39, 'Xe': 1.40, 'Cs': 2.44, 'Ba': 2.15,
+			'La': 2.07, 'Ce': 2.04, 'Pr': 2.03, 'Nd': 2.01,
+			'Pm': 1.99, 'Sm': 1.98, 'Eu': 1.98, 'Gd': 1.96,
+			'Tb': 1.94, 'Dy': 1.92, 'Ho': 1.92, 'Er': 1.89,
+			'Tm': 1.90, 'Yb': 1.87, 'Lu': 1.87, 'Hf': 1.75,
+			'Ta': 1.70, 'W': 1.62, 'Re': 1.51, 'Os': 1.44,
+			'Ir': 1.41, 'Pt': 1.36, 'Au': 1.36, 'Hg': 1.32,
+			'Tl': 1.45, 'Pb': 1.46, 'Bi': 1.48, 'Po': 1.40,
+			'At': 1.50, 'Rn': 1.50, 'Fr': 2.60, 'Ra': 2.21,
+			'Ac': 2.15, 'Th': 2.06, 'Pa': 2.00, 'U': 1.96,
+			'Np': 1.90, 'Pu': 1.87, 'Am': 1.80, 'Cm': 1.69}
+	#electronegativity in pauling scale from CRC Handbook of Chemistry and Physics (For elements not having pauling electronegativity, Allred Rochow electronegativity is taken)
+	electronegativity =  {'H': 2.20, 'He': 0.00, 'Li': 0.98, 'Be': 1.57,
+			'B': 2.04, 'C': 2.55, 'N': 3.04, 'O': 3.44,
+			'F': 3.98, 'Ne': 0.00, 'Na': 0.93, 'Mg': 1.31,
+			'Al': 1.61, 'Si': 1.90, 'P': 2.19, 'S': 2.58,
+			'Cl': 3.16, 'Ar': 0.00, 'K': 0.82, 'Ca': 1.00,
+			'Sc': 1.36, 'Ti': 1.54, 'V': 1.63, 'Cr': 1.66,
+			'Mn': 1.55, 'Fe': 1.83, 'Co': 1.88, 'Ni': 1.91,
+			'Cu': 1.90, 'Zn': 1.65, 'Ga': 1.81, 'Ge': 2.01,
+			'As': 2.01, 'Se': 2.55, 'Br': 2.96, 'Kr': 0.00,
+			'Rb': 0.82, 'Sr': 0.95, 'Y': 1.22, 'Zr': 1.33,
+			'Nb': 1.60, 'Mo': 2.16, 'Tc': 2.10, 'Ru': 2.20,
+			'Rh': 2.28, 'Pd': 2.20, 'Ag': 1.93, 'Cd': 1.69,
+			'In': 1.78, 'Sn': 1.96, 'Sb': 2.05, 'Te': 2.10,
+			'I': 2.66, 'Xe': 2.60, 'Cs': 0.79, 'Ba': 0.89,
+			'La': 1.10, 'Ce': 1.12, 'Pr': 1.13, 'Nd': 1.14,
+			'Pm': 1.07, 'Sm': 1.17, 'Eu': 1.01, 'Gd': 1.20,
+			'Tb': 1.10, 'Dy': 1.22, 'Ho': 1.23, 'Er': 1.24,
+			'Tm': 1.25, 'Yb': 1.06, 'Lu': 1.00, 'Hf': 1.30,
+			'Ta': 1.50, 'W': 1.70, 'Re': 1.90, 'Os': 2.20,
+			'Ir': 2.20, 'Pt': 2.20, 'Au': 2.40, 'Hg': 1.90,
+			'Tl': 1.80, 'Pb': 1.80, 'Bi': 1.90, 'Po': 2.00,
+			'At': 2.20, 'Rn': 0.00, 'Fr': 0.70, 'Ra': 0.90,
+			'Ac': 1.10, 'Th': 1.30, 'Pa': 1.50, 'U': 1.70,
+			'Np': 1.30, 'Pu': 1.30, 'Am': 1.30, 'Cm': 1.30}
+	#First ionization energy (from CRC Handbook of Chemistry and Physics)
+	first_ip =  {'H': 13.598, 'He': 24.587, 'Li': 5.392, 'Be': 9.323,
+			'B': 8.298, 'C': 11.260, 'N': 14.534, 'O': 13.618,
+			'F': 17.423, 'Ne': 21.565, 'Na': 5.139, 'Mg': 7.646,
+			'Al': 5.986, 'Si': 8.152, 'P': 10.487, 'S': 10.360,
+			'Cl': 12.968, 'Ar': 15.760, 'K': 4.341, 'Ca': 6.113,
+			'Sc': 6.561, 'Ti': 6.828, 'V': 6.746, 'Cr': 6.767,
+			'Mn': 7.434, 'Fe': 7.902, 'Co': 7.881, 'Ni': 7.640,
+			'Cu': 7.726, 'Zn': 9.394, 'Ga': 5.999, 'Ge': 7.899,
+			'As': 9.789, 'Se': 9.752, 'Br': 11.814, 'Kr': 14.000,
+			'Rb': 4.177, 'Sr': 5.695, 'Y': 6.217, 'Zr': 6.634,
+			'Nb': 6.759, 'Mo': 7.092, 'Tc': 7.280, 'Ru': 7.360,
+			'Rh': 7.459, 'Pd': 8.337, 'Ag': 7.576, 'Cd': 8.994,
+			'In': 5.786, 'Sn': 7.344, 'Sb': 8.608, 'Te': 9.010,
+			'I': 10.451, 'Xe': 12.130, 'Cs': 3.894, 'Ba': 5.212,
+			'La': 5.577, 'Ce': 5.539, 'Pr': 5.473, 'Nd': 5.525,
+			'Pm': 5.582, 'Sm': 5.644, 'Eu': 5.670, 'Gd': 6.150,
+			'Tb': 5.864, 'Dy': 5.939, 'Ho': 6.021, 'Er': 6.108,
+			'Tm': 6.184, 'Yb': 6.254, 'Lu': 5.426, 'Hf': 6.825,
+			'Ta': 7.550, 'W': 7.864, 'Re': 7.833, 'Os': 8.438,
+			'Ir': 8.967, 'Pt': 8.959, 'Au': 9.226, 'Hg': 10.437,
+			'Tl': 6.108, 'Pb': 7.417, 'Bi': 7.286, 'Po': 8.414,
+			'At': 9.318, 'Rn': 10.748, 'Fr': 4.073, 'Ra': 5.278,
+			'Ac': 5.170, 'Th': 6.307, 'Pa': 5.890, 'U': 6.194,
+			'Np': 6.266, 'Pu': 6.026, 'Am': 5.974, 'Cm': 5.991}
+	#pymatgent nearest neighbor to get local enveronment
+	import pymatgen as pm
+	from pymatgen.io.ase import AseAtomsAdaptor 
+	from ase.io import read, write
+	# from dask.diagnostics import ProgressBar
+	# data = read(path_to_cif)
+	print("Reading the CIF file...")
+	data_pm = pm.Structure.from_file(path_to_cif, primitive=False)
+	data = AseAtomsAdaptor.get_atoms(data_pm)
+	number_of_atoms = data.get_number_of_atoms()
+
+	cov_radii	      =np.array([radius[s] for s in data.get_chemical_symbols()])
+	en_pauling        =np.array([electronegativity[s] for s in data.get_chemical_symbols()])
+	ionization_energy =np.array([first_ip[s] for s in data.get_chemical_symbols()])
+	
+	# * Divide the atoms into different groups based on atomic number (Z) for finding the coordination shell.
+	atomic_numbers = data.get_atomic_numbers()	
+
+	# * Create a dictionary of functions for the different atomic number ranges
+	bins = [0,7,9,120]
+	flags = list(map(np.str, np.digitize(atomic_numbers, bins)))
+
+	print('Computing the features...')
+	# import dask.bag as db
+	# atom_ids =list(range(number_of_atoms))
+	# atom_ids_db = db.from_sequence(atom_ids).map(use_correct_func, flags, data)
+	# with ProgressBar():
+	# 	output_from_dask = np.array(atom_ids_db.compute())
+	# [neighbor_list, avg_neighbor_dist] = output_from_dask[:, 0], output_from_dask[:,1]
+
 	func_dict = {'1':find_neighbors_smallZ, '2':find_neighbors_oxynitro, '3':find_neighbors_largeZ}
 
 	neighbor_list, avg_neighbor_dist = zip(*[func_dict[flags[i]](i,data) for i in range(number_of_atoms)])
@@ -203,7 +431,7 @@ def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', a
 
 	""" Description
 	Computes the partial charges for a single CIF file and returns an ASE atoms object updated with the estimated charges 
-	included as atoms.info['_atom_site_charges']. Options are included for using a different pickled sklearn model and for write an output CIF with the new charges.
+	included as atoms.info['_atom_site_charges']. Features for each CIF is calculated in parallel using Dask. Options are included for using a different pickled sklearn model and for write an output CIF with the new charges.
 	
 	:type path_to_cif: string
 	:param path_to_cif: path to the cif file as input`
@@ -241,7 +469,7 @@ def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', a
 	else: 
 		model = joblib.load(path_to_pickle_obj)
 	print("Computing features...")
-	data= get_features_from_cif(path_to_cif)
+	data= get_features_from_cif_parallel(path_to_cif)
 	features = data.info['features']
 	print('Estimating charges...')
 	charges = model.predict(features)
@@ -418,8 +646,8 @@ def write_cif(fileobj, images, format='default'):
 def get_charges_multiple_serial(list_of_cifs,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
 	""" Description
-	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. This function runs on a single cpu and is
-	not parallelized for use in high-throuput applications. Yet it is quite fast, see the benchmarking on the Github page.
+	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. Each of the individual calculatiions
+	are parallelized and this function is made for when the CIF files involved are very large (>2000 atoms). The files will be processed one by one but each calculation will be parallelized for speed.
 
 	:type list_of_cifs: list
 	:param list_of_cifs: a list of paths to all the cif files to compute the charges for.
@@ -459,7 +687,7 @@ def get_charges_multiple_serial(list_of_cifs,  create_cif=False, path_to_output_
 		model = joblib.load(path_to_pickle_obj)
 
 	print('Calculating the features for all the files...')
-	data_all= [get_features_from_cif(l) for l in tqdm(list_of_cifs)]
+	data_all= [get_features_from_cif_parallel(l) for l in tqdm(list_of_cifs)]
 	# data_all = list(data_all)
 	charges_all = [model.predict(d.info['features']) for d in data_all]
 	# print(len(data_all), len(features_all), len(charges_all))
@@ -483,8 +711,9 @@ def get_charges_multiple_serial(list_of_cifs,  create_cif=False, path_to_output_
 def get_charges_multiple_parallel(list_of_cifs,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
 	""" Description
-	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. This function is parallelized 
-	using Dask (both multiprocessing or on an HPC) for use in high-throuput applications. It is very fast, see the benchmarking on the Github page.
+	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. This function is embarassingly parallel 
+	over different files using Dask (both multiprocessing or on an HPC). Recommended for use in high-throuput applications involving CIF files of less than 2000 atoms. All files 
+	will be processed in parallel but the individual calculations will be done on a sinlge CPU using numpy, which is fast for most CIFs.
 
 	:type list_of_cifs: list
 	:param list_of_cifs: a list of paths to all the cif files to compute the charges for.
@@ -528,7 +757,7 @@ def get_charges_multiple_parallel(list_of_cifs,  create_cif=False, path_to_outpu
 
 	print('Calculating the features for all the files...')
 	
-	data_db = db.from_sequence(list_of_cifs).map(get_features_from_cif)
+	data_db = db.from_sequence(list_of_cifs).map(get_features_from_cif_serial)
 	with ProgressBar():
 		data_all = data_db.compute()
 	# data_all= zip(*[get_features_from_cif(l) for l in tqdm(list_of_cifs)])
