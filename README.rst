@@ -137,8 +137,8 @@ PACMOF can be used to run calculations on a list of CIFs in parallel, where each
         data = pacmof.get_charges_multiple_large(lsit_of_cifs, create_cif=False)
 
 
-Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save
-time by not reloading the model for individual CIF files. 
+    Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save
+    time by not reloading the model for individual CIF files. 
 
 
 Citing PACMOF  : Coming Soon!
