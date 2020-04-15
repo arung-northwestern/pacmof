@@ -185,7 +185,7 @@ def get_features_from_cif(path_to_cif):
 
 	# * We can use pandas to get values from the dictionary
 	enSeries = pd.Series(electronegativity)
-	ipSeries = pd.Series(first_ip)
+	ipSeries = pd.Series(first_ip)N
 
 	# * Symbols for the neighbors
 	neighbor_symbols = [np.array(data.get_chemical_symbols())[nl] for nl in neighbor_list] 
