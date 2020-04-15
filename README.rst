@@ -21,7 +21,7 @@ Among these features, we found that the elemental electronegativity and the aver
 first coordination shell are by far the most important features when it comes to predicting partial charges.
 
 .. figure:: ./docs/images/Feature_importance_final.jpg
-    :scale: 50
+   :scale: 50 %
 
 
 About the pre-trained Random Forest model in PACMOF (Coming soon!)
@@ -29,7 +29,7 @@ About the pre-trained Random Forest model in PACMOF (Coming soon!)
 
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
-    :scale: 50
+   :scale: 50 %
 
 
 
@@ -116,7 +116,7 @@ Copyright (c) 2020, Snurr Research Group, Northwestern University
 
 ### Developers
 
-    Srinivasu Kancharlapalli, Visiting Scholar Snurr Group (2018-2020), Bhaba Atomic Research Center.
+    Srinivasu Kancharlapalli, Fulbright-Nehru Postdoctoral Research Scholar, Snurr Group (2018-2020), Bhabha Atomic Research Centre.
 
     Arun Gopalan, Ph.D. Scholar, Snurr Group (2015-2020)
 
