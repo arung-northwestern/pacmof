@@ -427,7 +427,75 @@ def get_features_from_cif_serial(path_to_cif):
 	data.info['features']=features
 	return data # * Returns the ASE atoms object and the features array.
 # %%
-def get_charges_single(path_to_cif,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
+def get_charges_single_serial(path_to_cif,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
+
+	""" Description
+	Computes the partial charges for a single CIF file and returns an ASE atoms object updated with the estimated charges 
+	included as atoms.info['_atom_site_charges']. Features for each CIF is calculated in serial using Numpy. 
+	Options are included for using a different pickled sklearn model and for write an output CIF with the new charges.
+	
+	:type path_to_cif: string
+	:param path_to_cif: path to the cif file as input`
+
+	:type create_cif: bool
+	:param create_cif: whether to output a new CIF file while '_atom_site_charges' added 
+
+	:type path_to_output_dir: string
+	:param path_to_output_dir: path to the output directory for creating the new CIF file.
+
+	:type add_string: string
+	:param add_string: A string added to the filename to distinguish the output cif file from the original one.
+
+	:type use_default_model: bool
+	:param use_default_model: whether  to use the pre-trained model or not. If set to False you can set path to a different pickle file using 'path_to_pickle_obj'.
+
+	:type path_to_pickle_obj: string
+	:param path_to_pickle_obj: path to a pickle file containing the scikit-learn model one wants to use. Is used only if use_default_model is set to False.
+
+	:raises:
+
+	:rtype: an ase atoms object with the partial charges added as atoms.info['_atom_site_charges']
+	"""
+
+	import numpy as np 
+	import joblib
+	import os 
+	# * Get the path of the pickle and load the model
+	print("Loading the model...")
+	if use_default_model==True:
+		this_dir, this_filename = os.path.split(__file__)
+		path_to_pickle_obj = os.path.join(this_dir, "data", "ML_Model_RF_HP_tuned.pkl")
+		# print(path_to_pickle_obj)
+		model = joblib.load(path_to_pickle_obj)
+	else: 
+		model = joblib.load(path_to_pickle_obj)
+	print("Computing features...")
+	data= get_features_from_cif_serial(path_to_cif)
+	features = data.info['features']
+	print('Estimating charges...')
+	charges = model.predict(features)
+	# * Adjust the charges for neutrality
+	charges_adj = charges - np.sum(charges)*np.abs(charges)/np.sum(np.abs(charges))
+
+	data.info['_atom_site_charge']=charges.tolist()
+
+	if np.any(np.abs(charges-charges_adj) > 0.2):
+		print("WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality!")
+	# if write_cif==True:
+
+	if create_cif==True:
+		print('Writing new cif file...')
+		path_to_cif = os.path.abspath(path_to_cif)
+		# new_filename = path_to_cif.split('.')[-2].split('/')[-1]+'_charged.cif'
+		new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+		path_to_output_dir = os.path.abspath(path_to_output_dir)
+		write_cif(path_to_output_dir+'\\'+new_filename, data)
+		# write_cif(path_to_output_dir+'/'+new_filename, data)
+	
+	return data
+
+#%%
+def get_charges_single_large(path_to_cif,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
 	""" Description
 	Computes the partial charges for a single CIF file and returns an ASE atoms object updated with the estimated charges 
