@@ -146,13 +146,11 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 Citing PACMOF  : Coming Soon!
 ************** 
 
-
-
-
+.. _Dask : https://dask.org/
 .. _Scikit-learn:
 .. _paper: https://arxiv.org/abs/1905.12098
-.. _ASE:
-.. _pymatgen:
+.. _ASE: https://wiki.fysik.dtu.dk/ase/
+.. _pymatgen: https://pymatgen.org/
 
 ### Copyright
 
