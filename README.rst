@@ -84,15 +84,15 @@ This is sufficient for most CIF files where the number of atoms are less than 20
 Parallel Calculations
 ----------------------
 
-Since PACMOF uses Dask_, you can run calculations in parallel on a single CPU using mult-threading without starting 
-Dask cluster. If you plan of doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster. before 
-calling any of the get_charges_multiple_serial/parallel. For example to start a cluster with 10 processes with 8 CPU's each use:
+Since PACMOF uses Dask_, you can run calculations in parallel on a single CPU using mult-threading without starting a 
+Dask cluster. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before 
+calling any of the get_charges_multiple_serial/parallel functions. For example, to start a cluster with 10 processes with 8 CPU's each use,
 
 .. code-block:: python
 
     from dask_jobqueue import SLURMCluster
     from distributed import Client
-    cluster=SLURMCluster(cores=4, interface='ib0', project='p20XXX', queue='short', walltime='04:00:00', memory='100GB')
+    cluster=SLURMCluster(cores=8, interface='ib0', project='p20XXX', queue='short', walltime='04:00:00', memory='100GB')
     cluster.scale(10)
     client= Client(cluster)
 
@@ -116,11 +116,11 @@ For CIFs with more than say 2000 atoms calculations in serial can be too slow, i
 
         data = pacmof.get_charges_single_parallel(path_to_cif, create_cif=False)
     
-Please refer to the docstring from help() to see the options on the output CIF file, to use a different machine learning model other than the 
+Please refer to the docstring from help() to see the options on the output CIF file and to use a different machine learning model other than the 
 pre-trained one.
 
 - Calculations on a list of CIFs in parallel
-PACMOF can be used to run calculations on a list of CIFs in parallel, where each calculation is run in serial or parallel depending on the need.
+PACMOF can be used to run calculations on a list of CIFs in one line, where each calculation is run in serial or parallel depending on the number of atoms .
 
     - Compute the charges for a list of CIFs in parallel, on a single CPU or using a dask cluster. 
 
@@ -129,8 +129,7 @@ PACMOF can be used to run calculations on a list of CIFs in parallel, where each
         data = pacmof.get_charges_multiple_parallel(lsit_of_cifs, create_cif=False)
 
 
-    - Compute the charge for a list of large CIFs, one by one, where each calculation is run in parallel. Use this only when the CIFs
-    have more than 2000 atoms each, if not the memory overhead for parallelizing will make the calculation slower than the serial case.
+    - Compute the charge for a list of large CIFs, one by one, where each calculation is run in parallel. Use this only when the CIFs have more than 2000 atoms each, if not the memory overhead for parallelizing will make the calculation slower than the serial case.
 
     .. code-block:: python
 
