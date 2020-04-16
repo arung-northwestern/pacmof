@@ -136,7 +136,7 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 
     .. code-block:: python
 
-        data = pacmof.get_charges_multiple_serial(list_of_cifs, create_cif=False)
+        data = pacmof.get_charges_multiple_onebyone(list_of_cifs, create_cif=False)
 
 
     Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save

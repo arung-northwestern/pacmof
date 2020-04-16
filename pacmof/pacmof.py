@@ -711,7 +711,7 @@ def write_cif(fileobj, images, format='default'):
 							 symbol, charge))
 	return None		
 # %%
-def get_charges_multiple_serial(list_of_cifs,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
+def get_charges_multiple_onebyone(list_of_cifs,  create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
 	""" Description
 	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. Each of the individual calculatiions
