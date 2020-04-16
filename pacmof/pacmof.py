@@ -477,7 +477,7 @@ def get_charges_single_serial(path_to_cif,  create_cif=False, path_to_output_dir
 	# * Adjust the charges for neutrality
 	charges_adj = charges - np.sum(charges)*np.abs(charges)/np.sum(np.abs(charges))
 
-	data.info['_atom_site_charge']=charges.tolist()
+	data.info['_atom_site_charge']=charges_adj.tolist()
 
 	if np.any(np.abs(charges-charges_adj) > 0.2):
 		print("WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality!")
@@ -544,7 +544,7 @@ def get_charges_single_large(path_to_cif,  create_cif=False, path_to_output_dir=
 	# * Adjust the charges for neutrality
 	charges_adj = charges - np.sum(charges)*np.abs(charges)/np.sum(np.abs(charges))
 
-	data.info['_atom_site_charge']=charges.tolist()
+	data.info['_atom_site_charge']=charges_adj.tolist()
 
 	if np.any(np.abs(charges-charges_adj) > 0.2):
 		print("WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality!")
@@ -744,6 +744,11 @@ def get_charges_multiple_onebyone(list_of_cifs,  create_cif=False, path_to_outpu
 	import numpy as np 
 	import joblib
 	import os 
+
+	def adjust_charge(charges):
+		import numpy as np
+		return charges - np.sum(charges)*np.abs(charges)/np.sum(np.abs(charges))
+
 	# * Get the path of the pickle and load the model
 	print("Loading the model...")
 	if use_default_model==True:
@@ -761,7 +766,11 @@ def get_charges_multiple_onebyone(list_of_cifs,  create_cif=False, path_to_outpu
 	# print(len(data_all), len(features_all), len(charges_all))
 	print('Estimating charges for all the files...')
 	for i in range(len(list_of_cifs)):
-			data_all[i].info['_atom_site_charge'] = charges_all[i]
+			charges_adj = adjust_charge(charges_all[i])
+			data_all[i].info['_atom_site_charge'] = charges_adj
+			if np.any(np.abs(charges_all[i]-charges_adj) > 0.2):
+				print("WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality in file\n"+list_of_cifs[i])
+			
 	# * Write the output cif files
 	if create_cif==True:
 		print('Writing new cif file...') 
@@ -805,11 +814,16 @@ def get_charges_multiple_parallel(list_of_cifs,  create_cif=False, path_to_outpu
 
 	:rtype:  a list of ase atoms objects with charges added as atoms.info['_atom_site_charges'] to each atoms object
 	"""
+
 	
 	from tqdm import tqdm
 	import numpy as np 
 	import joblib
 	import os 
+
+	def adjust_charge(charges):
+		import numpy as np
+		return charges - np.sum(charges)*np.abs(charges)/np.sum(np.abs(charges))
 
 	import dask.bag as db 
 	from dask.diagnostics import ProgressBar
@@ -836,7 +850,11 @@ def get_charges_multiple_parallel(list_of_cifs,  create_cif=False, path_to_outpu
 	# print(len(data_all), len(features_all), len(charges_all))
 	print('Estimating charges for all the files...')
 	for i in range(len(list_of_cifs)):
-			data_all[i].info['_atom_site_charge'] = charges_all[i]
+		charges_adj = adjust_charge(charges_all[i])
+		data_all[i].info['_atom_site_charge'] = charges_adj
+		if np.any(np.abs(charges_all[i]-charges_adj) > 0.2):
+			print("WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality in file\n"+list_of_cifs[i])
+
 	# * Write the output cif files
 	if create_cif==True:
 		print('Writing new cif file...') 
