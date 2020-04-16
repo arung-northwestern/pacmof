@@ -485,12 +485,14 @@ def get_charges_single_serial(path_to_cif,  create_cif=False, path_to_output_dir
 
 	if create_cif==True:
 		print('Writing new cif file...')
-		path_to_cif = os.path.abspath(path_to_cif)
-		# new_filename = path_to_cif.split('.')[-2].split('/')[-1]+'_charged.cif'
-		new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+		path_to_cif = os.path.abspath(list_of_cifs[i])
+		old_name = os.path.basename(path_to_cif)
+		new_name = old_name.split('.')[-2]+add_string+'.cif'
+		# data1 = data_all[i]
+		# new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
 		path_to_output_dir = os.path.abspath(path_to_output_dir)
-		write_cif(path_to_output_dir+'\\'+new_filename, data)
-		# write_cif(path_to_output_dir+'/'+new_filename, data)
+		path_to_output_cif = os.path.join(path_to_output_dir,new_name)
+		write_cif(path_to_output_cif, data_all[i])
 	
 	return data
 
@@ -552,12 +554,14 @@ def get_charges_single_large(path_to_cif,  create_cif=False, path_to_output_dir=
 
 	if create_cif==True:
 		print('Writing new cif file...')
-		path_to_cif = os.path.abspath(path_to_cif)
-		# new_filename = path_to_cif.split('.')[-2].split('/')[-1]+'_charged.cif'
-		new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+		path_to_cif = os.path.abspath(list_of_cifs[i])
+		old_name = os.path.basename(path_to_cif)
+		new_name = old_name.split('.')[-2]+add_string+'.cif'
+		# data1 = data_all[i]
+		# new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
 		path_to_output_dir = os.path.abspath(path_to_output_dir)
-		write_cif(path_to_output_dir+'\\'+new_filename, data)
-		# write_cif(path_to_output_dir+'/'+new_filename, data)
+		path_to_output_cif = os.path.join(path_to_output_dir,new_name)
+		write_cif(path_to_output_cif, data_all[i])
 	
 	return data
 #%%
@@ -777,10 +781,13 @@ def get_charges_multiple_onebyone(list_of_cifs,  create_cif=False, path_to_outpu
 		for i in range(len(list_of_cifs)):
 			# print(i)
 			path_to_cif = os.path.abspath(list_of_cifs[i])
+			old_name = os.path.basename(path_to_cif)
+			new_name = old_name.split('.')[-2]+add_string+'.cif'
 			# data1 = data_all[i]
-			new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+			# new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
 			path_to_output_dir = os.path.abspath(path_to_output_dir)
-			write_cif(path_to_output_dir+'\\'+new_filename, data_all[i])
+			path_to_output_cif = os.path.join(path_to_output_dir,new_name)
+			write_cif(path_to_output_cif, data_all[i])
 	print("Done!")
 	return data_all
 
@@ -861,10 +868,13 @@ def get_charges_multiple_parallel(list_of_cifs,  create_cif=False, path_to_outpu
 		for i in range(len(list_of_cifs)):
 			# print(i)
 			path_to_cif = os.path.abspath(list_of_cifs[i])
-			path_to_output_dir = os.path.abspath(path_to_output_dir)
+			old_name = os.path.basename(path_to_cif)
+			new_name = old_name.split('.')[-2]+add_string+'.cif'
 			# data1 = data_all[i]
-			new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
-			write_cif(path_to_output_dir+'\\'+new_filename, data_all[i])
+			# new_filename = path_to_cif.split('.')[-2].split('\\')[-1]+add_string+ '.cif'
+			path_to_output_dir = os.path.abspath(path_to_output_dir)
+			path_to_output_cif = os.path.join(path_to_output_dir,new_name)
+			write_cif(path_to_output_cif, data_all[i])
 	print("Done!")
 	return data_all
 
