@@ -125,7 +125,7 @@ pre-trained one.
 - Calculations on a list of CIFs in parallel
 PACMOF can be used to run calculations on a list of CIFs in one line, where each calculation is run in serial or parallel depending on the number of atoms .
 
-    - Compute the charges for a list of CIFs in parallel, on a single CPU or using a dask cluster. This is recommended for almost always. 
+    - Compute the charges for a list of CIFs in parallel, on a single CPU or using a dask cluster. This is recommended for most cases. 
 
     .. code-block:: python
 
