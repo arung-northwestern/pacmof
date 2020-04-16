@@ -75,7 +75,7 @@ Serial Calculations
 
 .. code-block:: python
 
-    data = pacmof.get_features_from_cif(path_to_cif)
+    data = pacmof.get_features_from_cif_serial(path_to_cif)
 
 - Compute the charges from a CIF file.
 This is sufficient for most CIF files where the number of atoms are less than 2000. 
