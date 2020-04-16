@@ -87,9 +87,9 @@ This is sufficient for most CIF files where the number of atoms are less than 20
 Parallel Calculations
 ----------------------
 
-Since PACMOF uses Dask_, you can run calculations in parallel on a single CPU using mult-threading without starting a 
-Dask cluster. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before 
-calling any of the get_charges_multiple_serial/parallel functions. For example, to start a cluster with 10 processes with 8 CPU's each use,
+Since PACMOF uses Dask_, you can run calculations in parallel on a single CPU using mult-threading *without starting a 
+Dask cluster*. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before 
+calling any of the get_charges_multiple_serial/parallel functions to run multiple calculations in parallel. For example, to start a cluster with 10 processes with 8 CPU's each use,
 
 .. code-block:: python
 
