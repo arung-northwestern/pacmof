@@ -6,8 +6,8 @@ Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learnin
 PACMOF is a small and easy to use python library that uses machine Learning to quickly estimate partial atomic charges in 
 metal-organic frameworks. The pre-trained Random Forest model (Scikit-learn) in PACMOF generates high-quality charges of the same accuracy as that of
 Density Derived Electrostatic and Chemical (DDEC), but without needing hours of periodic-DFT calculations. PACMOF is made with high-throughput screening
-in mind, where you can get charges on a large number of CIF files in parallel using a Dask_ backend with options to write the output charges into new CIF files and to 
-use a user-trained machine learning model instead of the pre-trained one (included). The inspiration for this work came from this recent paper_ published in the Physics Archives, 
+in mind, where you can get charges on a large number of CIF files in parallel, using a Dask_ backend with options to write the output charges into new CIF files, and to 
+use a user-trained machine learning models instead of the pre-trained one (included). The inspiration for this work came from this recent paper_ published in the Physics Archives, 
 where each atom in a MOF is described by a list of the elemental and the local environmental features. However, we chose a slightly different set of features to train our ML model namely,
 
 - Electronegativity (elemental)
@@ -140,7 +140,7 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 
 
     Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save
-    time by not reloading the model for individual CIF files. 
+    time by not reloading the ML model for individual CIF files. 
 
 
 Citing PACMOF  : Coming Soon!
