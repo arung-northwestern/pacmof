@@ -26,6 +26,9 @@ first coordination shell are by far the most important features when it comes to
 About the pre-trained Random Forest model in PACMOF (Coming soon!)
 ****************************************************
 
+- Details on the pre-trained Random Forest model (Coming Soon!)
+
+- Benchmarking data (Coming Soon!)
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
    :width: 200
@@ -103,14 +106,14 @@ Use the documentation on dask.org for more information on the different types of
 For CIFs with more than say 2000 atoms calculations in serial can be too slow, in those cases
 
 
-    - Compute the features for a large CIF in parallel
+    - Compute the features for a large CIF in parallel using Dask_
 
     .. code-block:: python
 
         data = pacmof.get_features_from_cif_parallel(path_to_cif)
 
 
-    - Compute the charges for a large CIF 
+    - Compute the charges for a large CIF in parallel using Dask_
 
     .. code-block:: python
 
@@ -122,14 +125,14 @@ pre-trained one.
 - Calculations on a list of CIFs in parallel
 PACMOF can be used to run calculations on a list of CIFs in one line, where each calculation is run in serial or parallel depending on the number of atoms .
 
-    - Compute the charges for a list of CIFs in parallel, on a single CPU or using a dask cluster. 
+    - Compute the charges for a list of CIFs in parallel, on a single CPU or using a dask cluster. This is recommended for almost always. 
 
     .. code-block:: python
 
         data = pacmof.get_charges_multiple_parallel(list_of_cifs, create_cif=False)
 
 
-    - Compute the charge for a list of large CIFs, one by one, where each calculation is run in parallel. Use this only when each of the CIFs have more than 2000 atoms each, if not the memory overhead for parallelizing will make the calculation slower than the serial case.
+    - Compute the charge for a list of large CIFs, one by one, where each calculation is run in parallel using Dask_. This is recommended when all of the CIFs have more than 2000 atoms each, if not the memory overhead for parallelizing might make the calculation slightly slower than the serial case.
 
     .. code-block:: python
 
