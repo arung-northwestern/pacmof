@@ -6,9 +6,9 @@ Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learnin
 PACMOF is a small and easy to use python library that uses machine Learning to quickly estimate partial atomic charges in 
 metal-organic frameworks. The pre-trained Random Forest model (Scikit-learn) in PACMOF generates high-quality charges of the same accuracy as that of
 Density Derived Electrostatic and Chemical (DDEC), but without needing hours of periodic-DFT calculations. PACMOF is made with high-throughput screening
-in mind, where you can get charges on a large number of CIF files in paralle using a Dask_ backend with options to write the output charges into new CIF files and to 
+in mind, where you can get charges on a large number of CIF files in parallel using a Dask_ backend with options to write the output charges into new CIF files and to 
 use a user-trained machine learning model instead of the pre-trained one (included). The inspiration for this work came from this recent paper_ published in the Physics Archives, 
-where each atom in a MOF is described by a list of the elemental and the local environmental features. However, we chose a similar set of features to train our ML model namely,
+where each atom in a MOF is described by a list of the elemental and the local environmental features. However, we chose a slightly different set of features to train our ML model namely,
 
 - Electronegativity (elemental)
 - First ionization energy (elemental)
@@ -61,10 +61,10 @@ As of now, please clone it from github_
 What can PACMOF do...?
 ***********************
 
-PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIF or for interactive 
-high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features']
-and the charges (if calculated) included under atoms.info['_atom_site_charges'] repectively. Functions are well documented in their docstrings
-and can be availed using help(function_name). The rest of the capabilites of PACMOF can be listed as follows:
+PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive 
+high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary
+and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings
+and can be availed using 'help(function_name)'. The general capabilites of PACMOF can be listed as follows:
 
 Serial Calculations
 --------------------
@@ -74,7 +74,7 @@ Serial Calculations
 
     data = pacmof.get_features_from_cif(path_to_cif)
 
-- Compute the charges on a CIF file in parallel 
+- Compute the charges from a CIF file.
 This is sufficient for most CIF files where the number of atoms are less than 2000. 
 
 .. code-block:: python
@@ -98,12 +98,12 @@ calling any of the get_charges_multiple_serial/parallel functions. For example, 
 
 Use the documentation on dask.org for more information on the different types of schedulers and more.
 
-- Calculations on a large CIF
+- Calculations on a large CIF with more than 2000 atoms
 
 For CIFs with more than say 2000 atoms calculations in serial can be too slow, in those cases
 
 
-    - Compute the features for a large CIF 
+    - Compute the features for a large CIF in parallel
 
     .. code-block:: python
 
@@ -114,7 +114,7 @@ For CIFs with more than say 2000 atoms calculations in serial can be too slow, i
 
     .. code-block:: python
 
-        data = pacmof.get_charges_single_parallel(path_to_cif, create_cif=False)
+        data = pacmof.get_charges_single_large(path_to_cif, create_cif=False)
     
 Please refer to the docstring from help() to see the options on the output CIF file and to use a different machine learning model other than the 
 pre-trained one.
@@ -126,14 +126,14 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 
     .. code-block:: python
 
-        data = pacmof.get_charges_multiple_parallel(lsit_of_cifs, create_cif=False)
+        data = pacmof.get_charges_multiple_parallel(list_of_cifs, create_cif=False)
 
 
-    - Compute the charge for a list of large CIFs, one by one, where each calculation is run in parallel. Use this only when the CIFs have more than 2000 atoms each, if not the memory overhead for parallelizing will make the calculation slower than the serial case.
+    - Compute the charge for a list of large CIFs, one by one, where each calculation is run in parallel. Use this only when each of the CIFs have more than 2000 atoms each, if not the memory overhead for parallelizing will make the calculation slower than the serial case.
 
     .. code-block:: python
 
-        data = pacmof.get_charges_multiple_large(lsit_of_cifs, create_cif=False)
+        data = pacmof.get_charges_multiple_serial(list_of_cifs, create_cif=False)
 
 
     Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save
