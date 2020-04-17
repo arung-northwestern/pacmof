@@ -485,7 +485,7 @@ def get_charges_single_serial(path_to_cif,  create_cif=False, path_to_output_dir
 
 	if create_cif==True:
 		print('Writing new cif file...')
-		path_to_cif = os.path.abspath(list_of_cifs[i])
+		path_to_cif = os.path.abspath(path_to_cif)
 		old_name = os.path.basename(path_to_cif)
 		new_name = old_name.split('.')[-2]+add_string+'.cif'
 		# data1 = data_all[i]
@@ -554,7 +554,7 @@ def get_charges_single_large(path_to_cif,  create_cif=False, path_to_output_dir=
 
 	if create_cif==True:
 		print('Writing new cif file...')
-		path_to_cif = os.path.abspath(list_of_cifs[i])
+		path_to_cif = os.path.abspath(path_to_cif)
 		old_name = os.path.basename(path_to_cif)
 		new_name = old_name.split('.')[-2]+add_string+'.cif'
 		# data1 = data_all[i]
