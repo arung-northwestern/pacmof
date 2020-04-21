@@ -26,14 +26,20 @@ first coordination shell are by far the most important features when it comes to
 About the pre-trained Random Forest model in PACMOF (Coming soon!)
 ****************************************************
 
-- Details on the pre-trained Random Forest model (Coming Soon!)
-
-- Benchmarking data (Coming Soon!)
+Details on the pre-trained Random Forest model (Coming Soon!)
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
    :width: 200
 
+Benchmarking
+-------------
 
+Figure below shows the comparison of times needed to estimate charges in CIFs with varying number of atoms. As the number of atoms increase beyond 1000, the 
+parallel implementation (pacmof.get_charges_single_large) gives significant speed-up over the serial version (pacmof.get_charges_single_serial) even on a laptop CPU with 
+4 cores.
+
+.. figure:: ./docs/images/no_atom_time.jpg
+   :width: 200
 
 Installing PACMOF
 ***********************
