@@ -35,8 +35,7 @@ Benchmarking
 -------------
 
 Figure below shows the comparison of times needed to estimate charges in CIFs with varying number of atoms. As the number of atoms increase beyond 1000, the 
-parallel implementation (pacmof.get_charges_single_large) gives significant speed-up over the serial version (pacmof.get_charges_single_serial) even on a laptop CPU with 
-4 cores.
+parallel implementation (pacmof.get_charges_single_large) using multithreading on an Intel Xeon E5-2680 gives significant speed-up over the serial version (pacmof.get_charges_single_serial).
 
 .. figure:: ./docs/images/no_atom_time.jpg
    :width: 200
@@ -100,7 +99,7 @@ calling any of the get_charges_multiple_serial/parallel functions to run multipl
 .. code-block:: python
 
     from dask_jobqueue import SLURMCluster
-    from distributed import Client
+    from dask.distributed import Client
     cluster=SLURMCluster(cores=8, interface='ib0', project='p20XXX', queue='short', walltime='04:00:00', memory='100GB')
     cluster.scale(10)
     client= Client(cluster)
