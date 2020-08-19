@@ -152,7 +152,7 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
 	# 	distances = atoms.get_distances(i, slice(None), mic =True)
 	# 	sum_radii = cov_radii[i]+cov_radii
 	# 	indices = np.where( distances< (sum_radii+0.5) )[0]
-	# 	indices= indices[indices!=i] # * Remove self
+	# 	indices= indices[indices!=i] # * Remove selfe
 	# 	return indices.tolist(),np.mean(distances[indices])
 #%%
 	import numpy as np
@@ -723,7 +723,7 @@ def get_charges_single_serial(path_to_cif,  create_cif=False, path_to_output_dir
 	return data
 
 #%%
-def get_charges_single_large(path_to_cif, client_name, create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
+def get_charges_single_large(path_to_cif, client_name='dummy', create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
 	""" Description Computes the partial charges for a single CIF file and returns an ASE atoms object updated with
 	the estimated charges included as atoms.info['_atom_site_charges']. Features for each CIF is calculated in
@@ -946,7 +946,7 @@ def write_cif(fileobj, images, format='default'):
 							 symbol, charge))
 	return None
 # %%
-def get_charges_multiple_onebyone(list_of_cifs,  client_name, create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
+def get_charges_multiple_onebyone(list_of_cifs,  client_name='dummy', create_cif=False, path_to_output_dir='.', add_string='_charged', use_default_model=True, path_to_pickle_obj='dummy_string'):
 
 	""" Description
 	Compute the partial charges in a list of CIFs. This function saves time by loading the Random forest model only once. Each of the individual calculatiions
