@@ -23,27 +23,58 @@ first coordination shell are by far the most important features when it comes to
 .. image:: ./docs/images/Feature_importance_final.jpg
    :width: 200
 
-About the pre-trained Random Forest model in PACMOF (Coming soon!)
-****************************************************
+Pre-trained Random Forest model in PACMOF
+***********************************************
 
-Details on the pre-trained Random Forest model (Coming Soon!)
+Training against DDEC Charges
+------------------------------
+
+Parity plot of partial atomic charges from DDEC method and random forest ML model for the training set
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
    :width: 200
 
-Benchmarking
--------------
+Parity plot of partial atomic charges from DDEC method and random forest ML model for the testing set
 
-Figure below shows the comparison of times needed to estimate charges in CIFs with varying number of atoms. As the number of atoms increase beyond 1000, the 
-parallel implementation (pacmof.get_charges_single_large) using multithreading on an Intel Xeon E5-2680 gives significant speed-up over the serial version (pacmof.get_charges_single_serial).
-
-.. figure:: ./docs/images/no_atom_time.jpg
+.. figure:: ./docs/images/parity_DDEC_testing.jpg
    :width: 200
+
+
+Please refer to the publication cited below for the parity plots of training and testing the RF model using CM5 charges and for more information on the model hyperparameters.
+
+
+Transferability to other material types
+----------------------------------------
+Parity plot of partial atomic charges of porous molecular crystals calculated from DDEC and ML model developed using DDEC charges
+
+.. figure:: ./docs/images/parity_pmc_ddec.jpg
+   :width: 200
+
+Please refer to the publication cited below for the parity plots on transferability to porous molecular crystals when evaluated using CM5 charges.
+
+
+Benchmarking the computation times
+-----------------------------------
+**Calculations in serial**
+
+Figure below shows the comparison of the computation times of the ‘get_charges_singe_serial’ subroutine in PACMOF while estimating partial charges using an Intel Xeon E5-2680 CPU for 1700 MOFs in the benchmarking set, plotted as a function of the number of atoms in the unit cell. The color indicates the percentage of atoms in the unit cell with atomic number Z > 8, for which a more expensive neighbor finding algorithm (CrystalNN) had to be used.
+
+.. figure:: ./docs/images/serial_only.jpg
+   :width: 200
+
+**High-throughput calculations in parallel**
+
+We choose a small, random set of 1700 MOFs to benchmark PACMOF, 1652 of which have less than 1000 atoms in their unit cell. For convenience, we grouped these 1652 MOFs into 3 groups based on the number of atoms in their unit cell (Table 1) and used them to benchmark the parallel calculations. Groups 1 to 3 represent different high-throughput screening scenarios with materials with small (Group 1, < 200 atoms), medium (Group 2, 200-500 atoms) and moderately large (Group 3, 500 -1000 atoms) unit cells. We used these groups to benchmark the ‘get_charges_multiple_parallel’ subroutine in PACMOF. Given the large variety in CPU hardware and the process-thread combinations, we chose to use Intel Xeon E5-2680 CPUs with one process per CPU (one process per thread) consistently for all the benchmarking calculations. The figure below shows the total computation times of the get_charges_multiple_parallel subroutine in PACMOF for Groups 1 to 3 using Dask clusters of different CPU counts.  Groups 1 to 3 mimic different high-throughput screening scenarios with MOFs of small (<200 atoms) to moderately large (500-1000 atoms) unit cell sizes
+
+.. figure:: ./docs/images/groups_timing.jpg
+   :width: 200
+
+This subroutine saves time by not having to reload the Scikit-learn model and is suitable for high-throughput screening (HTS) applications.  Each calculation is run 5 times and the error bars are calculated for a confidence interval of 95% (1.96 times the standard deviation). In general, the calculations run very fast, consuming only less than 6 minutes to compute the charges on all 1515 MOFs (Groups 1 and 2) and about 3 minutes for all 138 moderately large MOFs (Group 3) even on a small Dask cluster of 32 CPUs. Further significant speed ups of 35 %, 40 % and 27 % was observed for Groups 1, 2 and 3 respectively as the cluster sizes were increased from 32 CPUs to 80 CPUs in increments of  16 CPUs.
 
 Installing PACMOF
 ***********************
 
-PyIsoP will deployed on PyPI_ soon, after which we can install it easily using pip_ 
+PACMOF will be deployed on PyPI_ soon, after which we can install it easily using pip_
 
 .. code-block:: bash
 
@@ -56,7 +87,7 @@ PyIsoP will deployed on PyPI_ soon, after which we can install it easily using p
 
 .. Tip: Use "--override-channel" option for faster environment resolution.
 
-As of now, please clone it from github_
+As of now, please clone it from this page:
 
 .. code-block:: bash
 
@@ -66,16 +97,17 @@ As of now, please clone it from github_
 
 .. _github: https://github.com/arung-northwestern/pacmof
 
-What can PACMOF do...?
+What can PACMOF do ?
 ***********************
 
-PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive 
+PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive
 high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary
 and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings
 and can be availed using 'help(function_name)'. The general capabilites of PACMOF can be listed as follows:
 
 Serial Calculations
 --------------------
+
 - Compute the features for any CIF, this might be useful for training your own machine learning model.
 
 .. code-block:: python
@@ -83,6 +115,7 @@ Serial Calculations
     data = pacmof.get_features_from_cif_serial(path_to_cif)
 
 - Compute the charges from a CIF file.
+
 This is sufficient for most CIF files where the number of atoms are less than 2000. 
 
 .. code-block:: python
@@ -92,9 +125,8 @@ This is sufficient for most CIF files where the number of atoms are less than 20
 Parallel Calculations
 ----------------------
 
-Since PACMOF uses Dask_, you can run calculations in parallel on a single CPU using mult-threading *without starting a 
-Dask cluster*. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before 
-calling any of the get_charges_multiple_serial/parallel functions to run multiple calculations in parallel. For example, to start a cluster with 10 processes with 8 CPU's each use,
+Since PACMOF uses a Dask_ backend, you can run calculations in parallel on a single CPU using Dask_ without starting a Dask cluster. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before
+calling any of the get_charges_multiple_parallel/onebyone functions to run calculations in parallel. For example, to start a cluster with 10 processes with 8 CPU's each use,
 
 .. code-block:: python
 
@@ -104,11 +136,40 @@ calling any of the get_charges_multiple_serial/parallel functions to run multipl
     cluster.scale(10)
     client= Client(cluster)
 
-Use the documentation on dask.org for more information on the different types of schedulers and more.
+Please refer to the dask documentation on setup_ for use with other queuing systems and more.
+
+**The inner workings of parallel computing in PACMOF**
+
+Dask_ offers a following scheduler options for executing the task graphs for partial charge calculation.
+
++ *Threaded scheduler:* Not suitable for parallel calculations using objects due to the Global Interpreter Lock (GIL) in Python.
++ *Multi-processing scheduler:* Good for single CPU calculations with a few processes (workers) where the computation overhead from data sharing can be readily avoided.
++ *Distributed scheduler (preferred):* The most advanced of the Dask_ schedulers, provides versatility through concurrent futures_ . Large data such as the structure information might have to be pre-distributed to the processes to avoid any computational bottlenecks from data transfer. Allows for the use of the advanced Dask dashboard_ to keep track of the calculations in real-time.
+
+PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough for single CPU parallel calculations. If a  dask cluster is started beforehand, Dask_ detects that cluster is active and automatically switches to the more robust distributed scheduler for its calculations. All the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The *client_name* is recommended to be one of the following:
+- a object of the dask.distributed.Client type, like the 'client' variable initiated in the code snippet above. Uses the distributed_ scheduler
+- Keyword 'processes' to use the process-based scheduler
+
+We recommend specifying the scheduler explicitly to ensure robustness while using the distributed scheduler to run calculations on HPCs.
+
+    Note: To use the distributed scheduler on the single CPU initialize a local cluster and then pass
+    that as the client_name to the parallel routine in PACMOF
+
+    .. code-block:: python
+
+
+        from dask.distributed import Client, LocalCluster
+        cluster=LocalCluster()
+        client= Client(cluster)
+
+        data = pacmof.get_charges_multiple_parallel(list_of_cifs, create_cif=False, client_name=client)
+
+
+For more info the function arguments, please refer to the source code of PACMOF or use help(function_name).
 
 - Calculations on a large CIF with more than 2000 atoms
 
-For CIFs with more than say 2000 atoms calculations in serial can be too slow, in those cases
+For CIFs with more than say 2000 atoms calculations in serial can be too slow, in those cases PACMOF can be used to calculate charges (or features) quickly in parallel for a single CIF file.
 
 
     - Compute the features for a large CIF in parallel using Dask_
@@ -124,10 +185,10 @@ For CIFs with more than say 2000 atoms calculations in serial can be too slow, i
 
         data = pacmof.get_charges_single_large(path_to_cif, create_cif=False)
     
-Please refer to the docstring from help() to see the options on the output CIF file and to use a different machine learning model other than the 
-pre-trained one.
+Please refer to the docstring from help() to see the options on the output CIF file and to use a different machine learning model other than the pre-trained one.
 
 - Calculations on a list of CIFs in parallel
+
 PACMOF can be used to run calculations on a list of CIFs in one line, where each calculation is run in serial or parallel depending on the number of atoms .
 
     - Compute the charges for a list of CIFs in parallel, on a single CPU or using a dask cluster. This is recommended for most cases. 
@@ -144,18 +205,25 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
         data = pacmof.get_charges_multiple_onebyone(list_of_cifs, create_cif=False)
 
 
-    Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save
-    time by not reloading the ML model for individual CIF files. 
+    Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save time by not reloading the ML model for individual CIF files.
 
 
-Citing PACMOF  : Coming Soon!
-************** 
+Citing PACMOF
+****************
+
+    A Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal-Organic Frameworks. Srinivasu Kancharlapalli, Arun Gopalan, Maciej Haranczyk, and Randall Q. Snurr. (2020), in preparation.
+
 
 .. _Dask : https://dask.org/
-.. _Scikit-learn:
-.. _paper: https://arxiv.org/abs/1905.12098
+.. _Scikit-learn: https://scikit-learn.org/stable/
+.. _paper: 	https://pubs.acs.org/doi/10.1021/acs.chemmater.0c02468
 .. _ASE: https://wiki.fysik.dtu.dk/ase/
 .. _pymatgen: https://pymatgen.org/
+.. _setup: https://docs.dask.org/en/latest/setup.html
+.. _dask_bag: https://docs.dask.org/en/latest/bag.html
+.. _dashboard: https://docs.dask.org/en/latest/diagnostics-distributed.html
+.. _futures: https://docs.dask.org/en/latest/futures.html
+.. _distributed: https://distributed.dask.org/en/latest/
 
 ### Copyright
 
