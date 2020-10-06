@@ -146,11 +146,13 @@ Dask_ offers a following scheduler options for executing the task graphs for par
 + *Multi-processing scheduler:* Good for single CPU calculations with a few processes (workers) where the computation overhead from data sharing can be readily avoided.
 + *Distributed scheduler (preferred):* The most advanced of the Dask_ schedulers, provides versatility through concurrent futures_ . Large data such as the structure information might have to be pre-distributed to the processes to avoid any computational bottlenecks from data transfer. Allows for the use of the advanced Dask dashboard_ to keep track of the calculations in real-time.
 
-PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough for single CPU parallel calculations. If a  dask cluster is started beforehand, Dask_ detects that cluster is active and automatically switches to the more robust distributed scheduler for its calculations. All the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The *client_name* is recommended to be one of the following:
+PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough when using one or a few CPUs in parallel. If a  dask cluster is started beforehand, Dask_ detects that cluster is active and automatically switches to the more robust distributed scheduler for its calculations. Further, all the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The `*client_name*' is recommended to be one of the following:
+
 - a object of the dask.distributed.Client type, like the 'client' variable initiated in the code snippet above. Uses the distributed_ scheduler
 - Keyword 'processes' to use the process-based scheduler
+- if no *client_name* is specified and no cluster is initiated, the process-based scheduler is used by default.
 
-We recommend specifying the scheduler explicitly to ensure robustness while using the distributed scheduler to run calculations on HPCs.
+We recommend using the distributed scheduler always, and specifying the `*client_name*' explicitly to ensure robustness for calculations on both single machines and HPCs.
 
     Note: To use the distributed scheduler on the single CPU initialize a local cluster and then pass
     that as the client_name to the parallel routine in PACMOF
