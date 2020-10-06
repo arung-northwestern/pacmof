@@ -36,7 +36,7 @@ Parity plot of partial atomic charges from DDEC method and random forest ML mode
 
 Parity plot of partial atomic charges from DDEC method and random forest ML model for the testing set
 
-.. figure:: ./docs/images/parity_DDEC_testing.jpg
+.. figure:: ./docs/images/paity_DDEC_testing.jpg
    :width: 200
 
 
@@ -103,7 +103,7 @@ What can PACMOF do ?
 PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive
 high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary
 and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings
-and can be availed using 'help(function_name)'. The general capabilites of PACMOF can be listed as follows:
+and can be availed using 'help(function_name)'. The general capabilites of PACMOF can be summarized as follows:
 
 Serial Calculations
 --------------------
@@ -126,7 +126,7 @@ Parallel Calculations
 ----------------------
 
 Since PACMOF uses a Dask_ backend, you can run calculations in parallel on a single CPU using Dask_ without starting a Dask cluster. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before
-calling any of the get_charges_multiple_parallel/onebyone functions to run calculations in parallel. For example, to start a cluster with 10 processes with 8 CPU's each use,
+calling any of the get_charges_multiple_parallel/onebyone functions to run calculations in parallel. For example, to start a cluster with 10 processes with 8 CPUs per process use,
 
 .. code-block:: python
 
@@ -146,7 +146,7 @@ Dask_ offers a following scheduler options for executing the task graphs for par
 + *Multi-processing scheduler:* Good for single CPU calculations with a few processes (workers) where the computation overhead from data sharing can be readily avoided.
 + *Distributed scheduler (preferred):* The most advanced of the Dask_ schedulers, provides versatility through concurrent futures_ . Large data such as the structure information might have to be pre-distributed to the processes to avoid any computational bottlenecks from data transfer. Allows for the use of the advanced Dask dashboard_ to keep track of the calculations in real-time.
 
-PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough when using one or a few CPUs in parallel. If a  dask cluster is started beforehand, Dask_ detects that cluster is active and automatically switches to the more robust distributed scheduler for its calculations. Further, all the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The `*client_name*' is recommended to be one of the following:
+PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough when using one or a few CPUs in parallel. If a  dask cluster is started beforehand, Dask_ detects that a cluster is active and automatically switches to the more robust distributed scheduler for its calculations. Further, all the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The `*client_name*' is recommended to be one of the following:
 
 - a object of the dask.distributed.Client type, like the 'client' variable initiated in the code snippet above. Uses the distributed_ scheduler
 - Keyword 'processes' to use the process-based scheduler
