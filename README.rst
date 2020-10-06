@@ -20,7 +20,14 @@ where each atom in a MOF is described by a list of the elemental and the local e
 Among these features, we found that the elemental electronegativity and the average electronegativity of the 
 first coordination shell are by far the most important features when it comes to predicting partial charges.
 
+The relative feature importance is summarized in the figure below
+
 .. image:: ./docs/images/Feature_importance_final.jpg
+   :width: 200
+
+And the feature impact on the final predictions is summarized by the SHAP_ value plot
+
+.. image:: ./docs/images/shap.jpg
    :width: 200
 
 Pre-trained Random Forest model in PACMOF
@@ -226,7 +233,7 @@ Citing PACMOF
 .. _dashboard: https://docs.dask.org/en/latest/diagnostics-distributed.html
 .. _futures: https://docs.dask.org/en/latest/futures.html
 .. _distributed: https://distributed.dask.org/en/latest/
-
+.. _SHAP: https://www.kaggle.com/dansbecker/shap-values
 ### Copyright
 
 Copyright (c) 2020, Snurr Research Group, Northwestern University
