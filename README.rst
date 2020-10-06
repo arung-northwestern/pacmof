@@ -36,7 +36,7 @@ Parity plot of partial atomic charges from DDEC method and random forest ML mode
 
 Parity plot of partial atomic charges from DDEC method and random forest ML model for the testing set
 
-.. figure:: ./docs/images/paity_DDEC_testing.jpg
+.. figure:: ./docs/images/paity_ddec_testing.jpg
    :width: 200
 
 
