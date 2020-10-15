@@ -506,10 +506,26 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     average_en_shell = [np.mean(enSeries[ns].values) for ns in neighbor_symbols]
     average_ip_shell = [np.mean(ipSeries[ns].values) for ns in neighbor_symbols]
 
+    #%% Section added after manuscript revision
+    # Second shell neighbors including central atom
+    temp = [np.hstack(([neighbor_list[i] for i in neighbor_list[index]])) for index in range(data.get_global_number_of_atoms())]
+
+    # Exclude the central atom
+    neighbor_list_2 = [arr[arr != index] for index, arr in enumerate(temp)]  # Exclude the central atom
+
+    # Symbols for the second shell neighbors
+    neighbor_symbols_2 = [np.array(data.get_chemical_symbols())[nl] for nl in neighbor_list_2]
+
+    # Electronegativity of the second shell neighbors
+    average_en_shell_2 = [np.mean(enSeries[ns].values) for ns in neighbor_symbols_2]
+    #%%
+
     features = np.vstack(
-        (en_pauling, ionization_energy, nl_length, avg_neighbor_dist, average_en_shell, average_ip_shell)).T
+        (en_pauling, ionization_energy, nl_length, avg_neighbor_dist, average_en_shell, average_ip_shell, average_en_shell_2)).T
 
     data.info['features'] = features
+    data.info['neighbors'] = neighbor_list
+
     return data  # * Returns the ASE atoms object and the features array.
 
 
@@ -719,10 +735,25 @@ def get_features_from_cif_serial(path_to_cif):
     average_en_shell = [np.mean(enSeries[ns].values) for ns in neighbor_symbols]
     average_ip_shell = [np.mean(ipSeries[ns].values) for ns in neighbor_symbols]
 
+    #%% Section added after manuscript revision
+    # Second shell neighbors including central atom
+    temp = [np.hstack(([neighbor_list[i] for i in neighbor_list[index]])) for index in range(data.get_global_number_of_atoms())]
+
+    # Exclude the central atom
+    neighbor_list_2 = [arr[arr != index] for index, arr in enumerate(temp)]  # Exclude the central atom
+
+    # Symbols for the second shell neighbors
+    neighbor_symbols_2 = [np.array(data.get_chemical_symbols())[nl] for nl in neighbor_list_2]
+
+    # Electronegativity of the second shell neighbors
+    average_en_shell_2 = [np.mean(enSeries[ns].values) for ns in neighbor_symbols_2]
+
     features = np.vstack(
-        (en_pauling, ionization_energy, nl_length, avg_neighbor_dist, average_en_shell, average_ip_shell)).T
+        (en_pauling, ionization_energy, nl_length, avg_neighbor_dist, average_en_shell, average_ip_shell, average_en_shell_2)).T
 
     data.info['features'] = features
+    data.info['neighbors'] = neighbor_list
+
     return data  # * Returns the ASE atoms object and the features array.
 
 
