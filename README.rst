@@ -33,22 +33,41 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
 Pre-trained Random Forest model in PACMOF
 ***********************************************
 
-Training against DDEC Charges
-------------------------------
+Testing and validation against DDEC Charges
+--------------------------------------------
 
 Parity plot of partial atomic charges from DDEC method and random forest ML model for the training set
 
 .. figure:: ./docs/images/DDEC_vs_RF_final.jpg
    :width: 200
 
-Parity plot of partial atomic charges from DDEC method and random forest ML model for the testing set
+Parity plot of partial atomic charges from DDEC method and random forest ML model for the validation set comprised of CoRE and ToBaCCo MOFs.
 
-.. figure:: ./docs/images/paity_ddec_testing.jpg
+.. figure:: ./docs/images/paity_ddec_validation.jpg
    :width: 200
 
 
-Please refer to the publication cited below for the parity plots of training and testing the RF model using CM5 charges and for more information on the model hyperparameters.
+Please refer to the publication cited below for more information including the parity plots of training and testing the RF model using CM5 charges and for more information on the model hyperparameters.
 
+
+CO2 and N2 loading comparisons
+-------------------------------
+
+This section compares the adsorption uptakes predicted when using DDEC charges against
+that predicted by using ML charges (Random Forest trained on DDEC).
+
+Parity plot of the CO2 loading
+
+.. figure:: ./docs/images/CO2loading_ml_ddec.jpg
+   :width: 200
+
+
+Parity plot of the N2 loading
+
+.. figure:: ./docs/images/N2loading_ml_ddec.jpg
+   :width: 200
+
+Please refer to the publication cited below for more information including the parity plots of loading using the RF model trained on CM5 charges and for more information on the set of MOFs considered.
 
 Transferability to other material types
 ----------------------------------------
