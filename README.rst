@@ -16,6 +16,7 @@ where each atom in a MOF is described by a list of the elemental and the local e
 - The average electronegativity of the first coordination shell (local environment). 
 - The average coordination distance of the coordinated atoms (local environment) .
 - The average ionization energy of the first coordination shell (local environment).
+- The average electronegativity of the second coordination shell (local environment).
 
 Among these features, we found that the elemental electronegativity and the average electronegativity of the 
 first coordination shell are by far the most important features when it comes to predicting partial charges.
