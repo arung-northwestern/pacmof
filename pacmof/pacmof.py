@@ -795,7 +795,7 @@ def get_charges_single_serial(path_to_cif, create_cif=False, path_to_output_dir=
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "ML_Model_RF_HP_tuned.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
@@ -868,7 +868,7 @@ def get_charges_single_large(path_to_cif, client_name='dummy', create_cif=False,
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "ML_Model_RF_HP_tuned.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
@@ -1101,7 +1101,7 @@ def get_charges_multiple_onebyone(list_of_cifs, client_name='dummy', create_cif=
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "ML_Model_RF_HP_tuned.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
@@ -1195,7 +1195,7 @@ def get_charges_multiple_parallel(list_of_cifs, create_cif=False, path_to_output
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "ML_Model_RF_HP_tuned.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
