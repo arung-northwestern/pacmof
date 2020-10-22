@@ -680,14 +680,15 @@ def get_features_from_cif_serial(path_to_cif):
                 'Np': 6.266, 'Pu': 6.026, 'Am': 5.974, 'Cm': 5.991}
     # pymatgent nearest neighbor to get local enveronment
     import pymatgen as pm
+    from ase.io import read
     from pymatgen.io.ase import AseAtomsAdaptor
     from tqdm import tqdm
-    from ase.io import read, write
+    from ase.io import read
     # from dask.diagnostics import ProgressBar
     # data = read(path_to_cif)
     print("Reading  CIF file {}...".format(path_to_cif))
-    data_pm = pm.Structure.from_file(path_to_cif, primitive=False)
-    data = AseAtomsAdaptor.get_atoms(data_pm)
+    data = read(path_to_cif)
+    # data_pm = AseAtomsAdaptor.get_structure(atoms=data)
     number_of_atoms = data.get_global_number_of_atoms()
 
     cov_radii = np.array([radius[s] for s in data.get_chemical_symbols()])
