@@ -5,18 +5,22 @@
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning 
 **********************************************************************************
 
+.. _contents:
+
 Contents
 
-- :ref:`overview`
-- :ref:`install`
-- :ref:`rfmodel`
-- :ref:`features`
-- :ref:`citing`
+- Overview_
+- Install_
+- Validation_
+- Features_
+- Citation_
 
 .. _overview:
 
 Overview
 ***********
+[contents_]
+
 PACMOF is a small and easy to use python library that uses machine Learning to quickly estimate partial atomic charges in
 metal-organic frameworks. The pre-trained Random Forest model (Scikit-learn) in PACMOF generates high-quality charges of the same accuracy as that of
 Density Derived Electrostatic and Chemical (DDEC), but without needing hours of periodic-DFT calculations. PACMOF is made with high-throughput screening
@@ -45,10 +49,13 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
 .. image:: ./docs/images/shap.jpg
    :width: 200
 
-.. _rfmodel:
+
+.. _Validation:
 
 Pre-trained Random Forest model in PACMOF
 ***********************************************
+
+[contents_]
 
 Testing and validation against DDEC Charges
 --------------------------------------------
@@ -119,7 +126,15 @@ This subroutine saves time by not having to reload the Scikit-learn model and is
 Installing PACMOF
 ***********************
 
-PACMOF will be deployed on PyPI_ soon, after which we can install it easily using pip_
+[contents_]
+
+    PACMOF requires the following packages to work, although pip_ would install the requirements during install, we recommend installing these ahead of time using conda_ to ensure the integrity of your conda_ environment
+
+    .. code-block:: bash
+
+        conda install -c conda-forge "numpy>=1.13.3" "pymatgen>=2018.6.11" "ase>=3.19" "tqdm>=4.15" "pandas>=0.20.3" "scikit-learn>=0.19.1" "joblib>= 0.13.2" "pytest>=5.0.1" "dask[complete]" "dask-jobqueue>=0.6.2" "fsspec>=0.7.4"
+
+PACMOF is deployed on PyPI_, which we can install easily using pip_
 
 .. code-block:: bash
 
@@ -128,11 +143,7 @@ PACMOF will be deployed on PyPI_ soon, after which we can install it easily usin
 .. _pip: https://pypi.org/project/pip/
 .. _PyPI: https://pypi.org/
 
-..    conda install -c conda-forge pyisop 
-
-.. Tip: Use "--override-channel" option for faster environment resolution.
-
-As of now, please clone it from this page:
+For the latest version, please clone it from this repo (*recommended*):
 
 .. code-block:: bash
 
@@ -146,6 +157,7 @@ As of now, please clone it from this page:
 
 What can PACMOF do ?
 ***********************
+[contents_]
 
 PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive
 high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary
@@ -163,7 +175,7 @@ Serial Calculations
 
 - Compute the charges from a CIF file.
 
-This is sufficient for most CIF files where the number of atoms are less than 2000. 
+This is sufficient for most CIF files, where the number of atoms per unit cell is less than 2000.
 
 .. code-block:: python
 
@@ -173,7 +185,7 @@ Parallel Calculations
 ----------------------
 
 Since PACMOF uses a Dask_ backend, you can run calculations in parallel on a single CPU using Dask_ without starting a Dask cluster. If you plan on doing high-throughput screening with many CIF files on an HPC, you could start a Dask cluster before
-calling any of the get_charges_multiple_parallel/onebyone functions to run calculations in parallel. For example, to start a cluster with 10 processes with 8 CPUs per process use,
+calling any of the get_charges_multiple_parallel/onebyone functions to run calculations in parallel. For example, to start a cluster with 10 processes with 8 CPUs per process on an HPC that uses SLURM_ use,
 
 .. code-block:: python
 
@@ -183,9 +195,12 @@ calling any of the get_charges_multiple_parallel/onebyone functions to run calcu
     cluster.scale(10)
     client= Client(cluster)
 
-Please refer to the dask documentation on setup_ for use with other queuing systems and more.
+    Note: Please refer to the dask documentation on setup_ for use with other queuing systems and more.
 
 **The inner workings of parallel computing in PACMOF**
+
+Note: For more info the function arguments, please refer to the source code file pacmof.py in PACMOF or use help(function_name).
+
 
 Dask_ offers a following scheduler options for executing the task graphs for partial charge calculation.
 
@@ -193,13 +208,13 @@ Dask_ offers a following scheduler options for executing the task graphs for par
 + *Multi-processing scheduler:* Good for single CPU calculations with a few processes (workers) where the computation overhead from data sharing can be readily avoided.
 + *Distributed scheduler (preferred):* The most advanced of the Dask_ schedulers, provides versatility through concurrent futures_ . Large data such as the structure information might have to be pre-distributed to the processes to avoid any computational bottlenecks from data transfer. Allows for the use of the advanced Dask dashboard_ to keep track of the calculations in real-time.
 
-PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough when using one or a few CPUs in parallel. If a  dask cluster is started beforehand, Dask_ detects that a cluster is active and automatically switches to the more robust distributed scheduler for its calculations. Further, all the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The `*client_name*' is recommended to be one of the following:
+PACMOF uses dask_bag_ for parallel computations, which defaults to the process-based scheduler, this is enough when using one or a few CPUs in parallel. If a  dask cluster is started beforehand, Dask_ detects that a cluster is active and automatically switches to the more robust distributed scheduler for its calculations. Further, all the parallel functions listed below support a *client_name* argument to specify the scheduler explicitly. The '*client_name*' is recommended to be one of the following:
 
 - a object of the dask.distributed.Client type, like the 'client' variable initiated in the code snippet above. Uses the distributed_ scheduler
 - Keyword 'processes' to use the process-based scheduler
 - if no *client_name* is specified and no cluster is initiated, the process-based scheduler is used by default.
 
-We recommend using the distributed scheduler always, and specifying the `*client_name*' explicitly to ensure robustness for calculations on both single machines and HPCs.
+We recommend using the distributed scheduler always, and specifying the '*client_name*' explicitly to ensure robustness for calculations on both single machines and HPCs.
 
     Note: To use the distributed scheduler on the single CPU initialize a local cluster and then pass
     that as the client_name to the parallel routine in PACMOF
@@ -214,7 +229,6 @@ We recommend using the distributed scheduler always, and specifying the `*client
         data = pacmof.get_charges_multiple_parallel(list_of_cifs, create_cif=False, client_name=client)
 
 
-For more info the function arguments, please refer to the source code of PACMOF or use help(function_name).
 
 - Calculations on a large CIF with more than 2000 atoms
 
@@ -234,7 +248,7 @@ For CIFs with more than say 2000 atoms calculations in serial can be too slow, i
 
         data = pacmof.get_charges_single_large(path_to_cif, create_cif=False)
     
-Please refer to the docstring from help() to see the options on the output CIF file and to use a different machine learning model other than the pre-trained one.
+    Note: Please refer to the docstring from help() to see the options on writing the output CIF file and to use a different machine learning model other than the pre-trained one.
 
 - Calculations on a list of CIFs in parallel
 
@@ -256,10 +270,11 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 
     Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save time by not reloading the ML model for individual CIF files.
 
-.. _citing:
+.. _citation:
 
 Citing PACMOF
 ****************
+[contents_]
 
     A Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal-Organic Frameworks. Srinivasu Kancharlapalli, Arun Gopalan, Maciej Haranczyk, and Randall Q. Snurr. (2020), in preparation.
 
@@ -275,6 +290,9 @@ Citing PACMOF
 .. _futures: https://docs.dask.org/en/latest/futures.html
 .. _distributed: https://distributed.dask.org/en/latest/
 .. _SHAP: https://www.kaggle.com/dansbecker/shap-values
+.. _SLURM: https://slurm.schedmd.com/documentation.html
+.. _conda: https://docs.conda.io/en/latest/
+
 
 ### Copyright
 
@@ -293,6 +311,7 @@ Copyright (c) 2020, Snurr Research Group, Northwestern University
     Biosciences through the Nanoporous Materials Genome Center under award 
     DE-FG02-17ER16362.
 
+[contents_]
 
 Project based on the 
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.2.
