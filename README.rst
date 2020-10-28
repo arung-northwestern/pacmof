@@ -11,7 +11,7 @@ Contents
 
 - Overview_
 - Installation_
-- Testing_and_Validation_
+- Development_
 - Usage_
 - Citation_
 
@@ -50,11 +50,10 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
    :width: 200
 
 
-.. _testing_and_validation:
+.. _development:
 
-Testing_and_Validation
+Development
 ************************
-
 [contents_]
 
 Testing and validation against DDEC Charges
