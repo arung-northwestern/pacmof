@@ -52,7 +52,7 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
 
 .. _validation:
 
-Pre-trained Random Forest model in PACMOF
+Validation
 ***********************************************
 
 [contents_]
@@ -158,6 +158,7 @@ Since PACMOF is deployed on GitHub, we can install using pip_
 What can PACMOF do ?
 ***********************
 [contents_]
+
 PACMOF calculates partial charges in MOFs in serial or parallel using CIF files as input. PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings and can be availed using 'help(function_name)'. The general capabilities of PACMOF can be summarized as follows:
 
 Serial Calculations
