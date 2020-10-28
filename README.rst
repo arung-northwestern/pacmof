@@ -75,6 +75,7 @@ Please refer to the publication cited below for more information including the p
 
 CO2 and N2 loading comparisons
 -------------------------------
+[contents_]
 
 This section compares the adsorption uptakes predicted when using DDEC charges against
 that predicted by using ML charges (Random Forest trained on DDEC).
@@ -94,6 +95,8 @@ Please refer to the publication cited below for more information including the p
 
 Transferability to other material types
 ----------------------------------------
+[contents_]
+
 Parity plot of partial atomic charges of porous molecular crystals calculated from DDEC and ML model developed using DDEC charges
 
 .. figure:: ./docs/images/parity_pmc_ddec.jpg
@@ -104,6 +107,8 @@ Please refer to the publication cited below for the parity plots on transferabil
 
 Benchmarking the computation times
 -----------------------------------
+[contents_]
+
 **Calculations in serial**
 
 Figure below shows the comparison of the computation times of the ‘get_charges_singe_serial’ subroutine in PACMOF while estimating partial charges using an Intel Xeon E5-2680 CPU for 1700 MOFs in the benchmarking set, plotted as a function of the number of atoms in the unit cell. The color indicates the percentage of atoms in the unit cell with atomic number Z > 8, for which a more expensive neighbor finding algorithm (CrystalNN) had to be used.
