@@ -134,14 +134,6 @@ Installing PACMOF
 
         conda install -c conda-forge "numpy>=1.13.3" "pymatgen>=2018.6.11" "ase>=3.19" "tqdm>=4.15" "pandas>=0.20.3" "scikit-learn>=0.19.1" "joblib>= 0.13.2" "pytest>=5.0.1" "dask[complete]" "dask-jobqueue>=0.6.2" "fsspec>=0.7.4"
 
-PACMOF is deployed on PyPI_, which we can install easily using pip_
-
-.. code-block:: bash
-
-    pip install pacmof
-    
-.. _pip: https://pypi.org/project/pip/
-.. _PyPI: https://pypi.org/
 
 For the latest version, please clone this repo and use (*recommended*):
 
@@ -151,16 +143,22 @@ For the latest version, please clone this repo and use (*recommended*):
 
 .. _github: https://github.com/arung-northwestern/pacmof
 
+Since PACMOF is deployed on GitHub_, we can install using pip_
+
+.. code-block:: bash
+
+    pip install git+https://github.com/arung-northwestern/pacmof
+    
+.. _pip: https://pypi.org/project/pip/
+.. _PyPI: https://pypi.org/
+
+
 .. _features:
 
 What can PACMOF do ?
 ***********************
 [contents_]
-
-PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive
-high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary
-and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings
-and can be availed using 'help(function_name)'. The general capabilites of PACMOF can be summarized as follows:
+PACMOF calculates partial charges in MOFs in serial or parallel using CIF files as input. PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings and can be availed using 'help(function_name)'. The general capabilities of PACMOF can be summarized as follows:
 
 Serial Calculations
 --------------------
@@ -290,6 +288,7 @@ Citing PACMOF
 .. _SHAP: https://www.kaggle.com/dansbecker/shap-values
 .. _SLURM: https://slurm.schedmd.com/documentation.html
 .. _conda: https://docs.conda.io/en/latest/
+.. _GitHub: https://github.com/
 
 
 ### Copyright
