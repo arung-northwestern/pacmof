@@ -128,7 +128,7 @@ Installing PACMOF
 
 [contents_]
 
-    PACMOF requires the following packages to work, although pip_ would install the requirements automatically, we recommend installing these ahead of time using conda_ to ensure the integrity of your conda_ environment
+    PACMOF requires the following packages to work we recommend installing these ahead of time using conda_ to ensure the integrity of your conda_ environment
 
     .. code-block:: bash
 
@@ -143,11 +143,9 @@ PACMOF is deployed on PyPI_, which we can install easily using pip_
 .. _pip: https://pypi.org/project/pip/
 .. _PyPI: https://pypi.org/
 
-For the latest version, please clone it from this repo (*recommended*):
+For the latest version, please clone this repo and use (*recommended*):
 
 .. code-block:: bash
-
-    git clone git@github.com:arung-northwestern/pacmof.git
     cd pacmof/
     python setup.py install
 
