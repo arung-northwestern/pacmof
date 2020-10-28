@@ -47,7 +47,7 @@ setup(
     # url='http://www.my_package.com',  # Website
     install_requires=["numpy>=1.13.3", "pymatgen>=2018.6.11", "joblib>= 0.13.2", "ase>=3.19", "tqdm>=4.15","pandas>=0.20.3","scikit-learn>=0.19.1", "pytest>=5.0.1","dask>=2.2", "dask_jobqueue>=0.6.2"],              # Required packages, pulls from pip if needed; do not use for Conda deployment
     platforms=['Linux','Mac OS-X','Unix','Windows'],            # Valid platforms your code works on, adjust to your flavor
-    python_requires=">=3.6",          # Python version restrictions
+    python_requires=">=3.7",          # Python version restrictions
 
     # Manual control if final 
     # package is compressible or not, set False to prevent the .egg from being made
