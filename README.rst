@@ -1,5 +1,5 @@
 
-.. image:: https://travis-ci.com/arung-northwestern/pacmof.svg?&branch=master
+.. image:: https://travis-ci.com/arung-northwestern/pacmof.svg?token=aVxN4HyzqyiRuqPvtZRU&branch=master
     :target: https://travis-ci.com/arung-northwestern/pacmof
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning 
