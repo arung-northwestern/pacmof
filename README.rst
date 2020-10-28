@@ -1,5 +1,5 @@
 
-.. image:: https://travis-ci.com/arung-northwestern/pacmof.svg?branch=master
+.. image:: https://travis-ci.com/arung-northwestern/pacmof.svg?&branch=master
     :target: https://travis-ci.com/arung-northwestern/pacmof
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning 
@@ -128,7 +128,7 @@ Installing PACMOF
 
 [contents_]
 
-    PACMOF requires the following packages to work, although pip_ would install the requirements during install, we recommend installing these ahead of time using conda_ to ensure the integrity of your conda_ environment
+    PACMOF requires the following packages to work, although pip_ would install the requirements automatically, we recommend installing these ahead of time using conda_ to ensure the integrity of your conda_ environment
 
     .. code-block:: bash
 
