@@ -139,13 +139,12 @@ Installation
         conda install -c conda-forge "numpy>=1.13.3" "pymatgen>=2018.6.11" "ase>=3.19" "tqdm>=4.15" "pandas>=0.20.3" "scikit-learn>=0.19.1" "joblib>= 0.13.2" "pytest>=5.0.1" "dask[complete]" "dask-jobqueue>=0.6.2" "fsspec>=0.7.4"
 
 
-For the latest version, please clone this repo and use (*recommended*):
+For the latest version, please clone this repo and use (*recommended*)
 
 .. code-block:: bash
-    cd pacmof/
-    python setup.py install
 
-.. _github: https://github.com/arung-northwestern/pacmof
+    cd pacmof
+    python setup.py install
 
 Since PACMOF is deployed on GitHub, we can install using pip_
 
@@ -296,7 +295,7 @@ Citation
 .. _SHAP: https://www.kaggle.com/dansbecker/shap-values
 .. _SLURM: https://slurm.schedmd.com/documentation.html
 .. _conda: https://docs.conda.io/en/latest/
-.. _GitHub: https://github.com/
+.. _github: https://github.com/arung-northwestern/pacmof
 
 
 ### Copyright
