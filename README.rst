@@ -1,9 +1,11 @@
 
+.. image:: https://travis-ci.com/arung-northwestern/pacmof.svg?token=aVxN4HyzqyiRuqPvtZRU&branch=master
+    :target: https://travis-ci.com/arung-northwestern/pacmof
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning 
 **********************************************************************************
 
-PACMOF is a small and easy to use python library that uses machine Learning to quickly estimate partial atomic charges in 
+PACMOF is a small and easy to use python library that uses machine Learning to quickly estimate partial atomic charges in
 metal-organic frameworks. The pre-trained Random Forest model (Scikit-learn) in PACMOF generates high-quality charges of the same accuracy as that of
 Density Derived Electrostatic and Chemical (DDEC), but without needing hours of periodic-DFT calculations. PACMOF is made with high-throughput screening
 in mind, where you can get charges on a large number of CIF files in parallel, using a Dask_ backend with options to write the output charges into new CIF files, and to 
@@ -18,7 +20,7 @@ where each atom in a MOF is described by a list of the elemental and the local e
 - The average ionization energy of the first coordination shell (local environment).
 - The average electronegativity of the second coordination shell (local environment).
 
-Among these features, we found that the elemental electronegativity and the average electronegativity of the 
+Among these features, we found that the elemental electronegativity and the average electronegativity of the
 first coordination shell are by far the most important features when it comes to predicting partial charges.
 
 The relative feature importance is summarized in the figure below
