@@ -16,7 +16,7 @@ install:
 script:
   - conda info --envs
   - conda list --name test-environment
-   - pytest -v pacmof/tests/
+  - pytest -v pacmof/tests/
 
 
 
