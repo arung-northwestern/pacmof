@@ -5,6 +5,18 @@
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning 
 **********************************************************************************
 
+Contents
+
+- :any:`overview`
+- :any:`install`
+- :any:`rfmodel`
+- :any:`features`
+- :any:`citing`
+
+.. _overview:
+
+Overview
+***********
 PACMOF is a small and easy to use python library that uses machine Learning to quickly estimate partial atomic charges in
 metal-organic frameworks. The pre-trained Random Forest model (Scikit-learn) in PACMOF generates high-quality charges of the same accuracy as that of
 Density Derived Electrostatic and Chemical (DDEC), but without needing hours of periodic-DFT calculations. PACMOF is made with high-throughput screening
@@ -32,6 +44,8 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
 
 .. image:: ./docs/images/shap.jpg
    :width: 200
+
+.. _rfmodel:
 
 Pre-trained Random Forest model in PACMOF
 ***********************************************
@@ -100,6 +114,8 @@ We choose a small, random set of 1700 MOFs to benchmark PACMOF, 1652 of which ha
 
 This subroutine saves time by not having to reload the Scikit-learn model and is suitable for high-throughput screening (HTS) applications.  Each calculation is run 5 times and the error bars are calculated for a confidence interval of 95% (1.96 times the standard deviation). In general, the calculations run very fast, consuming only less than 6 minutes to compute the charges on all 1515 MOFs (Groups 1 and 2) and about 3 minutes for all 138 moderately large MOFs (Group 3) even on a small Dask cluster of 32 CPUs. Further significant speed ups of 35 %, 40 % and 27 % was observed for Groups 1, 2 and 3 respectively as the cluster sizes were increased from 32 CPUs to 80 CPUs in increments of  16 CPUs.
 
+.. _install:
+
 Installing PACMOF
 ***********************
 
@@ -125,6 +141,8 @@ As of now, please clone it from this page:
     python setup.py install
 
 .. _github: https://github.com/arung-northwestern/pacmof
+
+.. _features:
 
 What can PACMOF do ?
 ***********************
@@ -238,6 +256,7 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 
     Note: As usual, you could use the serial functions and submit multiple jobs for different CIFs, however the functions above will save time by not reloading the ML model for individual CIF files.
 
+.. _citing:
 
 Citing PACMOF
 ****************
@@ -256,6 +275,7 @@ Citing PACMOF
 .. _futures: https://docs.dask.org/en/latest/futures.html
 .. _distributed: https://distributed.dask.org/en/latest/
 .. _SHAP: https://www.kaggle.com/dansbecker/shap-values
+
 ### Copyright
 
 Copyright (c) 2020, Snurr Research Group, Northwestern University
