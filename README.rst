@@ -50,7 +50,7 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
    :width: 200
 
 
-.. _Validation:
+.. _validation:
 
 Pre-trained Random Forest model in PACMOF
 ***********************************************
@@ -143,7 +143,7 @@ For the latest version, please clone this repo and use (*recommended*):
 
 .. _github: https://github.com/arung-northwestern/pacmof
 
-Since PACMOF is deployed on GitHub_, we can install using pip_
+Since PACMOF is deployed on GitHub, we can install using pip_
 
 .. code-block:: bash
 
