@@ -7,11 +7,11 @@ Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learnin
 
 Contents
 
-- :any:`overview`
-- :any:`install`
-- :any:`rfmodel`
-- :any:`features`
-- :any:`citing`
+- :ref:`overview`
+- :ref:`install`
+- :ref:`rfmodel`
+- :ref:`features`
+- :ref:`citing`
 
 .. _overview:
 
