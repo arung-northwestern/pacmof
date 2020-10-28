@@ -191,7 +191,7 @@ calling any of the get_charges_multiple_parallel/onebyone functions to run calcu
     cluster.scale(10)
     client= Client(cluster)
 
-    Note: Please refer to the dask documentation on setup_ for use with other queuing systems and more.
+   Note: Please refer to the dask documentation on setup_ for use with other queuing systems and more.
 
 **The inner workings of parallel computing in PACMOF**
 
