@@ -10,9 +10,9 @@ Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learnin
 Contents
 
 - Overview_
-- Install_
-- Validation_
-- Features_
+- Installation_
+- Testing_and_Validation_
+- Usage_
 - Citation_
 
 .. _overview:
@@ -50,10 +50,10 @@ And the feature impact on the final predictions is summarized by the SHAP_ value
    :width: 200
 
 
-.. _validation:
+.. _testing_and_validation:
 
-Validation
-***********************************************
+Testing_and_Validation
+************************
 
 [contents_]
 
@@ -121,10 +121,10 @@ We choose a small, random set of 1700 MOFs to benchmark PACMOF, 1652 of which ha
 
 This subroutine saves time by not having to reload the Scikit-learn model and is suitable for high-throughput screening (HTS) applications.  Each calculation is run 5 times and the error bars are calculated for a confidence interval of 95% (1.96 times the standard deviation). In general, the calculations run very fast, consuming only less than 6 minutes to compute the charges on all 1515 MOFs (Groups 1 and 2) and about 3 minutes for all 138 moderately large MOFs (Group 3) even on a small Dask cluster of 32 CPUs. Further significant speed ups of 35 %, 40 % and 27 % was observed for Groups 1, 2 and 3 respectively as the cluster sizes were increased from 32 CPUs to 80 CPUs in increments of  16 CPUs.
 
-.. _install:
+.. _installation:
 
-Installing PACMOF
-***********************
+Installation
+*****************
 
 [contents_]
 
@@ -153,11 +153,14 @@ Since PACMOF is deployed on GitHub, we can install using pip_
 .. _PyPI: https://pypi.org/
 
 
-.. _features:
+.. _Usage:
+
+Usage
+*******
+[contents_]
 
 What can PACMOF do ?
-***********************
-[contents_]
+---------------------
 
 PACMOF calculates partial charges in MOFs in serial or parallel using CIF files as input. PACMOF uses a Dask_ backend to do calculations in parallel which is useful in processing large CIFs or for interactive high-throughput screening. All the functions return an ASE_ style atoms object (or a list of objects) with the features included under atoms.info['features'] dictionary and the charges (if calculated) included under the atoms.info['_atom_site_charges'] dictionary respectively. Functions are well documented in their docstrings and can be availed using 'help(function_name)'. The general capabilities of PACMOF can be summarized as follows:
 
@@ -269,8 +272,8 @@ PACMOF can be used to run calculations on a list of CIFs in one line, where each
 
 .. _citation:
 
-Citing PACMOF
-****************
+Citation
+*************
 [contents_]
 
     A Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal-Organic Frameworks. Srinivasu Kancharlapalli, Arun Gopalan, Maciej Haranczyk, and Randall Q. Snurr. (2020), in preparation.
