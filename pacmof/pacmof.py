@@ -806,6 +806,8 @@ def get_charges_single_serial(path_to_cif, create_cif=False, path_to_output_dir=
     features = data.info['features']
     print("Estimating charges for {}...".format(path_to_cif))
     charges = model.predict(features)
+
+    # charges = np.round(charges, decimals=4)
     # * Adjust the charges for neutrality
     charges_adj = charges - np.sum(charges) * np.abs(charges) / np.sum(np.abs(charges))
 
@@ -881,6 +883,9 @@ def get_charges_single_large(path_to_cif, client_name='dummy', create_cif=False,
     features = data_out.info['features']
     print('Estimating charges...')
     charges = model.predict(features)
+    # round the charges
+    # charges = np.round(charges, decimals=4)
+
     # * Adjust the charges for neutrality
     charges_adj = charges - np.sum(charges) * np.abs(charges) / np.sum(np.abs(charges))
 
@@ -1042,7 +1047,7 @@ def write_cif(fileobj, images, format='default'):
                            pos[0], pos[1], pos[2], occ, charge))
             else:
                 write_enc(fileobj,
-                          '  %-8s %6.4f %7.5f  %7.5f  %7.5f  %4s  %6.3f  %s  %6.4f\n'
+                          '  %-8s %6.4f %7.5f  %7.5f  %7.5f  %4s  %6.3f  %s  %6.16f\n'
                           % ('%s%d' % (symbol, no[symbol]),
                              occ,
                              pos[0],
@@ -1096,6 +1101,7 @@ def get_charges_multiple_onebyone(list_of_cifs, client_name='dummy', create_cif=
 
     def adjust_charge(charges):
         import numpy as np
+        # charges = np.round(charges, decimals=4)
         return charges - np.sum(charges) * np.abs(charges) / np.sum(np.abs(charges))
 
     # * Get the path of the pickle and load the model
@@ -1188,6 +1194,7 @@ def get_charges_multiple_parallel(list_of_cifs, create_cif=False, path_to_output
 
     def adjust_charge(charges):
         import numpy as np
+        # charges = np.round(charges, decimals=4)
         return charges - np.sum(charges) * np.abs(charges) / np.sum(np.abs(charges))
 
     import dask.bag as db
