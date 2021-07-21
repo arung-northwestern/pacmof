@@ -4,6 +4,7 @@
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning
 **********************************************************************************
+
 Publication_
 
 .. _contents:
@@ -297,7 +298,7 @@ Kancharlapalli, S., Gopalan, A., Haranczyk, M., & Snurr, R. Q. (2021). Fast and 
 .. _SLURM: https://slurm.schedmd.com/documentation.html
 .. _conda: https://docs.conda.io/en/latest/
 .. _github: https://github.com/arung-northwestern/pacmof
-.. _Publication:https://pubs.acs.org/doi/10.1021/acs.jctc.0c01229
+.. _Publication: https://pubs.acs.org/doi/10.1021/acs.jctc.0c01229
 
 ### Copyright
 
