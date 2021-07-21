@@ -4,7 +4,6 @@
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning
 **********************************************************************************
-
 Publication_
 
 .. _contents:
@@ -308,7 +307,7 @@ Copyright (c) 2020, Snurr Research Group, Northwestern University
 
     Srinivasu Kancharlapalli, Fulbright-Nehru Postdoctoral Research Scholar, Snurr Group (2018-2020), Bhabha Atomic Research Centre.
 
-    Arun Gopalan, Ph.D. Scholar, Snurr Group (2015-2020)
+    Arun Gopalan, Ph.D., Snurr Group (2015-2020) (corresponding)
 
 #### Acknowledgements
         
