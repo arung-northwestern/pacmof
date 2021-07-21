@@ -280,7 +280,7 @@ Citation
 *************
 [contents_]
 
-    A Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal-Organic Frameworks. Srinivasu Kancharlapalli, Arun Gopalan, Maciej Haranczyk, and Randall Q. Snurr. (2020), in preparation.
+Kancharlapalli, S., Gopalan, A., Haranczyk, M., & Snurr, R. Q. (2021). Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal–Organic Frameworks. Journal of Chemical Theory and Computation, 17(5), 3052-3064.
 
 
 .. _Dask : https://dask.org/
