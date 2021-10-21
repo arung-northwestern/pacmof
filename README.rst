@@ -2,8 +2,9 @@
 .. image:: https://travis-ci.com/arung-northwestern/pacmof.svg?token=aVxN4HyzqyiRuqPvtZRU&branch=master
     :target: https://travis-ci.com/arung-northwestern/pacmof
 
-Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning 
+Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning
 **********************************************************************************
+Publication_
 
 .. _contents:
 
@@ -279,7 +280,7 @@ Citation
 *************
 [contents_]
 
-    A Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal-Organic Frameworks. Srinivasu Kancharlapalli, Arun Gopalan, Maciej Haranczyk, and Randall Q. Snurr. (2020), in preparation.
+Kancharlapalli, S., Gopalan, A., Haranczyk, M., & Snurr, R. Q. (2021). Fast and Accurate Machine Learning Strategy for Calculating Partial Atomic Charges in Metal–Organic Frameworks. Journal of Chemical Theory and Computation, 17(5), 3052-3064.
 
 
 .. _Dask : https://dask.org/
@@ -296,7 +297,7 @@ Citation
 .. _SLURM: https://slurm.schedmd.com/documentation.html
 .. _conda: https://docs.conda.io/en/latest/
 .. _github: https://github.com/arung-northwestern/pacmof
-
+.. _Publication: https://pubs.acs.org/doi/10.1021/acs.jctc.0c01229
 
 ### Copyright
 
@@ -306,7 +307,7 @@ Copyright (c) 2020, Snurr Research Group, Northwestern University
 
     Srinivasu Kancharlapalli, Fulbright-Nehru Postdoctoral Research Scholar, Snurr Group (2018-2020), Bhabha Atomic Research Centre.
 
-    Arun Gopalan, Ph.D. Scholar, Snurr Group (2015-2020)
+    Arun Gopalan, Ph.D., Snurr Group (2015-2020) (corresponding)
 
 #### Acknowledgements
         
