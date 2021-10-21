@@ -13,11 +13,11 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
 	Computes the features for any given CIF file. The resultant features are updated in the output ASE atoms object under atoms.info['features'].
 	The calculation is parallelized using Dask, hence, this function is recommended over the serial version, especially if the CIF file is large (>2000 atoms).
 
-	:type path_to_cif: string
 	:param path_to_cif: path to the cif file as input`
+	:type path_to_cif: string
 
-	:type client: Client object from dask distributed
-	:param client: Used to run these calculations on a predefined dask cluster.
+	:param client_name: Used to run these calculations on a predefined dask cluster.
+	:type client_name: Client object from dask distributed
 
 	:raises: None
 
@@ -42,8 +42,6 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     def find_neighbors_smallZ(i, atoms_dict):
         import numpy as np
         from ase.data import covalent_radii
-        from pymatgen.io import ase
-        from pymatgen import Structure
         from ase import Atoms
         # struct = Structure.from_dict(struct_dict.result())  # pymatgen structure from dict
         # atoms = ase.AseAtomsAdaptor.get_atoms(structure=struct)  # ase atoms object
@@ -88,7 +86,6 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     def find_neighbors_largeZ(i,struct_dict, atoms_dict):
         import numpy as np
         from pymatgen.analysis.local_env import CrystalNN
-        from pymatgen.io import ase
         from pymatgen import Structure
         struct = Structure.from_dict(struct_dict)  # pymatgen structure object
         # atoms = ase.AseAtomsAdaptor.get_atoms(structure=struct)  # ase atoms object
@@ -131,8 +128,6 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     def find_neighbors_oxynitro(i,atoms_dict):
         import numpy as np
         from ase.data import covalent_radii
-        from pymatgen.io import ase
-        from pymatgen import Structure
         from ase import Atoms
         # struct = Structure.from_dict(struct_dict.result())  # pymatgen structure from dict
         # atoms = ase.AseAtomsAdaptor.get_atoms(structure=struct)  # ase atoms object
@@ -218,7 +213,6 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     # 	return indices.tolist(),np.mean(distances[indices])
     # %%
     import numpy as np
-    from pymatgen.analysis.local_env import CrystalNN
     import pandas as pd
 
     radius = {'H': 0.31, 'He': 0.28, 'Li': 1.28, 'Be': 0.96,
@@ -296,10 +290,6 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
                 'Ac': 5.170, 'Th': 6.307, 'Pa': 5.890, 'U': 6.194,
                 'Np': 6.266, 'Pu': 6.026, 'Am': 5.974, 'Cm': 5.991}
     # pymatgent nearest neighbor to get local enveronment
-    import pymatgen as pm
-    from pymatgen.io.ase import AseAtomsAdaptor
-    from ase.io import read, write
-    from dask.diagnostics import ProgressBar
     # data = read(path_to_cif)
     print("Reading  CIF file {}...".format(path_to_cif))
     # data_pm = pm.Structure.from_file(path_to_cif, primitive=False)
@@ -601,7 +591,6 @@ def get_features_from_cif_serial(path_to_cif):
         return indices.tolist(), np.mean(distances[indices])
 
     import numpy as np
-    from pymatgen.analysis.local_env import CrystalNN
     import pandas as pd
 
     radius = {'H': 0.31, 'He': 0.28, 'Li': 1.28, 'Be': 0.96,
@@ -679,9 +668,6 @@ def get_features_from_cif_serial(path_to_cif):
                 'Ac': 5.170, 'Th': 6.307, 'Pa': 5.890, 'U': 6.194,
                 'Np': 6.266, 'Pu': 6.026, 'Am': 5.974, 'Cm': 5.991}
     # pymatgent nearest neighbor to get local enveronment
-    import pymatgen as pm
-    from ase.io import read
-    from pymatgen.io.ase import AseAtomsAdaptor
     from tqdm import tqdm
     from ase.io import read
     # from dask.diagnostics import ProgressBar
@@ -796,7 +782,7 @@ def get_charges_single_serial(path_to_cif, create_cif=False, path_to_output_dir=
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
@@ -849,10 +835,14 @@ def get_charges_single_large(path_to_cif, client_name='dummy', create_cif=False,
 	:type add_string: string
 	:param add_string: A string added to the filename to distinguish the output cif file from the original one.
 
-	:type use_default_model: bool :param use_default_model: whether  to use the pre-trained model or not. If set to
-	False you can set path to a different pickle file using 'path_to_pickle_obj'.
+    :param client_name: Used to run these calculations on a predefined dask cluster.
+	:type client_name: Client object from dask distributed
 
-	:type path_to_pickle_obj: string :param path_to_pickle_obj: path to a pickle file containing the scikit-learn
+	:type use_default_model: bool
+	:param use_default_model: whether  to use the pre-trained model or not. If set to false you can set path to a different pickle file using 'path_to_pickle_obj'.
+
+	:type path_to_pickle_obj: string
+	:param path_to_pickle_obj: path to a pickle file containing the scikit-learn
 	model one wants to use. Is used only if use_default_model is set to False.
 
 	:raises:
@@ -869,7 +859,7 @@ def get_charges_single_large(path_to_cif, client_name='dummy', create_cif=False,
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
@@ -1006,7 +996,7 @@ def write_cif(fileobj, images, format='default'):
 
         if coord_type == 'fract':
             coords = atoms.get_scaled_positions().tolist()
-            charges = atoms.info['_atom_site_charge']
+            # charges = atoms.info['_atom_site_charge']
         else:
             coords = atoms.get_positions().tolist()
         symbols = atoms.get_chemical_symbols()
@@ -1080,8 +1070,8 @@ def get_charges_multiple_onebyone(list_of_cifs, client_name='dummy', create_cif=
 	:type path_to_pickle_obj: string
 	:param path_to_pickle_obj: path to a pickle file containing the scikit-learn model one wants to use. Is used only if use_default_model is set to False.
 
-	:type client: Client object from dask distributed
-	:param client: Used to run these calculations on a predefined dask cluster.
+	:type client_name: Client object from dask distributed
+	:param client_name: Used to run these calculations on a predefined dask cluster.
 
 	:raises:
 
@@ -1102,7 +1092,7 @@ def get_charges_multiple_onebyone(list_of_cifs, client_name='dummy', create_cif=
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
@@ -1173,15 +1163,14 @@ def get_charges_multiple_parallel(list_of_cifs, create_cif=False, path_to_output
 	:type path_to_pickle_obj: string
 	:param path_to_pickle_obj: path to a pickle file containing the scikit-learn model one wants to use. Is used only if use_default_model is set to False.
 
-	:type client: Client object from dask distributed
-	:param client: Used to run these calculations on a predefined dask cluster.
+	:type client_name: Client object from dask distributed
+	:param client_name: Used to run these calculations on a predefined dask cluster.
 
 	:raises:
 
 	:rtype:  a list of ase atoms objects with charges added as atoms.info['_atom_site_charges'] to each atoms object
 	"""
 
-    from tqdm import tqdm
     import numpy as np
     import joblib
     import os
@@ -1196,7 +1185,7 @@ def get_charges_multiple_parallel(list_of_cifs, create_cif=False, path_to_output
     print("Loading the model...")
     if use_default_model:
         this_dir, this_filename = os.path.split(__file__)
-        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC_revised_150_tree.pkl")
+        path_to_pickle_obj = os.path.join(this_dir, "data", "Model_RF_DDEC.pkl")
         # print(path_to_pickle_obj)
         model = joblib.load(path_to_pickle_obj)
     else:
