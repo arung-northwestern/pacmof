@@ -7,7 +7,7 @@ from setuptools.command.install import install
 from setuptools.command.develop import  develop
 import versioneer
 import subprocess
-from icecream import ic
+# from icecream import ic
 import pandas as pd
 import numpy as np
 import joblib
@@ -30,8 +30,8 @@ except:
 
 path_to_dir = os.path.dirname(os.path.abspath(__file__))
 path_to_model_generator = os.path.join(path_to_dir, "pacmof", "data", "model_generator.py")
-ic.configureOutput(includeContext=True)
-ic(path_to_model_generator)
+# ic.configureOutput(includeContext=True)
+# ic(path_to_model_generator)
 class PostDevelopCommand(develop):
     """Post-installation for development mode."""
     def run(self):
@@ -40,10 +40,10 @@ class PostDevelopCommand(develop):
         # path_to_folder = os.path.dirname(os.path.abspath(__file__))
         path_to_ddec_data = os.path.join(path_to_dir,'pacmof','data', 'data_DDEC.csv')
         path_to_cm5_data = os.path.join(path_to_dir,'pacmof','data', 'data_CM5.csv')
-        # ic.configureOutput(includeContext=True)
-        # ic(path_to_cm5_data)
-        # ic(path_to_ddec_data)
-        # ic(os.path.exists(path_to_ddec_data))
+#         # ic.configureOutput(includeContext=True)
+#         # ic(path_to_cm5_data)
+#         # ic(path_to_ddec_data)
+#         # ic(os.path.exists(path_to_ddec_data))
         print("Please wait, compiling the RandomForestRegressor model...\n")
         print("This might take a few minutes...")
         df_DDEC = pd.read_csv(path_to_ddec_data)
@@ -78,10 +78,10 @@ class PostInstallCommand(install):
         # PUT YOUR POST-INSTALL SCRIPT HERE or CAL
         path_to_ddec_data = os.path.join(path_to_dir, 'pacmof', 'data', 'data_DDEC.csv')
         path_to_cm5_data = os.path.join(path_to_dir, 'pacmof', 'data', 'data_CM5.csv')
-        # ic.configureOutput(includeContext=True)
-        # ic(path_to_cm5_data)
-        # ic(path_to_ddec_data)
-        # ic(os.path.exists(path_to_ddec_data))
+#         # ic.configureOutput(includeContext=True)
+#         # ic(path_to_cm5_data)
+#         # ic(path_to_ddec_data)
+#         # ic(os.path.exists(path_to_ddec_data))
         print("Please wait, compiling the RandomForestRegressor model...\n")
         print("This might take a few minutes...")
         df_DDEC = pd.read_csv(path_to_ddec_data)
@@ -107,7 +107,7 @@ class PostInstallCommand(install):
         joblib.dump(regressor, path_to_cm5_pkl, compress=3)
 
 
-ic(versioneer.get_cmdclass())
+# ic(versioneer.get_cmdclass())
 setup(
     # Self-descriptive entries which should always be present
     name='pacmof',
