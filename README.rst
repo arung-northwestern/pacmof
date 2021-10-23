@@ -11,8 +11,8 @@ Publication_
 Contents
 
 - Overview_
-- Installation_
 - Development_
+- Installation_
 - Usage_
 - Citation_
 
@@ -147,12 +147,8 @@ For the latest version, please clone this repo and use (*recommended*)
     cd pacmof
     python setup.py install
 
-Since PACMOF is deployed on GitHub, we can install using pip_
+**Note**: PACMOF shouldn't be installed using 'pip', as it doesn't allow the execution of post install commands. To ensure compatibility with your version of Scikit-learn and to save the memory overhead, PACMOF trains and persists the ML model locally, post install.
 
-.. code-block:: bash
-
-    pip install git+https://github.com/arung-northwestern/pacmof
-    
 .. _pip: https://pypi.org/project/pip/
 .. _PyPI: https://pypi.org/
 
