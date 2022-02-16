@@ -132,7 +132,7 @@ setup(
 
     # Allows `setup.py test` to work correctly with pytest
     setup_requires=[] + pytest_runner,
-    package_data={'pacmof': ["data/*.dat","data/*.csv","data/*.py","data/*.cif","data/*.pdb","data/*.md", "tests/*"]},
+    package_data={'pacmof': ["data/*.dat","data/*.csv","data/*.py","data/*.cif","data/*.pdb","data/*.md", "tests/*", "data/*.pkl"]},
     # Additional entries you may want simply uncomment the lines you want and fill in the data
     # url='http://www.my_package.com',  # Website
     install_requires=["numpy>=1.13.3", "pymatgen>=2018.6.11", "joblib>= 0.13.2", "ase>=3.19", "tqdm>=4.15","pandas>=0.20.3","scikit-learn>=0.19.0", "pytest>=5.0.1","dask>=2.2", "dask_jobqueue>=0.6.2", "fsspec>=0.7.4"],              # Required packages, pulls from pip if needed; do not use for Conda deployment
