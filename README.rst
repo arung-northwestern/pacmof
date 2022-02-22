@@ -4,7 +4,7 @@
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning
 **********************************************************************************
-*Check out our publication in JCTC here_*
+*Check out our publication_ in JCTC!*
 
 .. _contents:
 
@@ -27,7 +27,7 @@ metal-organic frameworks. The pre-trained Random Forest model (Scikit-learn) in 
 Density Derived Electrostatic and Chemical (DDEC), but without needing hours of periodic-DFT calculations. PACMOF is made with high-throughput screening
 in mind, where you can get charges on a large number of CIF files in parallel, using a Dask_ backend with options to write the output charges into new CIF files, and to 
 use user-trained machine learning models instead of the pre-trained one (compiled during installation). Please find more information about the method and implementation
-in our publication here_. The inspiration for this work came from this paper_,
+in our publication_. The inspiration for this work came from this paper_,
 where each atom in a MOF is described by a list of the elemental and the local environmental features. However, we chose a slightly different set of features to train our ML model namely,
 
 - Electronegativity (elemental)
@@ -314,7 +314,7 @@ Kancharlapalli, S., Gopalan, A., Haranczyk, M., & Snurr, R. Q. (2021). Fast and 
 .. _SLURM: https://slurm.schedmd.com/documentation.html
 .. _conda: https://docs.conda.io/en/latest/
 .. _github: https://github.com/arung-northwestern/pacmof
-.. _here: https://pubs.acs.org/doi/10.1021/acs.jctc.0c01229
+.. _publication: https://pubs.acs.org/doi/10.1021/acs.jctc.0c01229
 
 ### Copyright
 
