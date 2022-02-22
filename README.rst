@@ -4,7 +4,7 @@
 
 Partial Atomic Charges in Metal-Organic Frameworks (PACMOF) from Machine Learning
 **********************************************************************************
-*Check out our publication_ in JCTC!*
+Check out our publication_ in JCTC!
 
 .. _contents:
 
