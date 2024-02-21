@@ -312,7 +312,7 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     bins = [0, 7, 9, 120]
     flags = np.digitize(atomic_numbers, bins).tolist()
 
-    # flags = list(map(np.str, np.digitize(atomic_numbers, bins)))
+    # flags = list(map(str, np.digitize(atomic_numbers, bins)))
     # func_dict = {'1': find_neighbors_smallZ, '2': find_neighbors_oxynitro, '3': find_neighbors_largeZ}
     # %%
     print('Computing features for {} ...'.format(path_to_cif))
@@ -686,7 +686,7 @@ def get_features_from_cif_serial(path_to_cif):
 
     # * Create a dictionary of functions for the different atomic number ranges
     bins = [0, 7, 9, 120]
-    flags = list(map(np.str, np.digitize(atomic_numbers, bins)))
+    flags = list(map(str, np.digitize(atomic_numbers, bins)))
 
     print("Computing features for {}...".format(path_to_cif))
     # import dask.bag as db
