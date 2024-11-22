@@ -98,7 +98,7 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
         import warnings
         warnings.filterwarnings("ignore")
         nn_object = CrystalNN(x_diff_weight=0, distance_cutoffs=(0.3, 0.5))
-        local_env = nn_object.get_nn_info(mof_pm, n=np.int(i))
+        local_env = nn_object.get_nn_info(mof_pm, n=int(i))
         indices = []
         for index in range(len(local_env)):
             indices.append(local_env[index]['site_index'])
@@ -117,7 +117,7 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
         import warnings
         warnings.filterwarnings("ignore")
         nn_object = CrystalNN(x_diff_weight=0, distance_cutoffs=(0.3, 0.5))
-        local_env = nn_object.get_nn_info(mof_pm, n=np.int(i))
+        local_env = nn_object.get_nn_info(mof_pm, n=int(i))
         indices = []
         for index in range(len(local_env)):
             indices.append(local_env[index]['site_index'])
@@ -291,7 +291,7 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
                 'Np': 6.266, 'Pu': 6.026, 'Am': 5.974, 'Cm': 5.991}
     # pymatgent nearest neighbor to get local enveronment
     # data = read(path_to_cif)
-    print("Reading  CIF file {}...".format(path_to_cif))
+    print(f"Reading CIF file {path_to_cif}...")
     # data_pm = pm.Structure.from_file(path_to_cif, primitive=False)
     from ase.io import read
     from pymatgen.io import ase
@@ -315,7 +315,7 @@ def get_features_from_cif_parallel(path_to_cif, client_name='dummy'):
     # flags = list(map(str, np.digitize(atomic_numbers, bins)))
     # func_dict = {'1': find_neighbors_smallZ, '2': find_neighbors_oxynitro, '3': find_neighbors_largeZ}
     # %%
-    print('Computing features for {} ...'.format(path_to_cif))
+    print(f'Computing features for {path_to_cif} ...')
 
     # import dask.bag as db
     atom_ids = list(range(number_of_atoms))
@@ -672,7 +672,7 @@ def get_features_from_cif_serial(path_to_cif):
     from ase.io import read
     # from dask.diagnostics import ProgressBar
     # data = read(path_to_cif)
-    print("Reading  CIF file {}...".format(path_to_cif))
+    print(f"Reading CIF file {path_to_cif}...")
     data = read(path_to_cif)
     # data_pm = AseAtomsAdaptor.get_structure(atoms=data)
     number_of_atoms = data.get_global_number_of_atoms()
@@ -688,7 +688,7 @@ def get_features_from_cif_serial(path_to_cif):
     bins = [0, 7, 9, 120]
     flags = list(map(str, np.digitize(atomic_numbers, bins)))
 
-    print("Computing features for {}...".format(path_to_cif))
+    print(f"Computing features for {path_to_cif}...")
     # import dask.bag as db
     # atom_ids =list(range(number_of_atoms))
     # atom_ids_db = db.from_sequence(atom_ids).map(use_correct_func, flags, data)
@@ -790,7 +790,7 @@ def get_charges_single_serial(path_to_cif, create_cif=False, path_to_output_dir=
     # print("Computing features...")
     data = get_features_from_cif_serial(path_to_cif)
     features = data.info['features']
-    print("Estimating charges for {}...".format(path_to_cif))
+    print(f"Estimating charges for {path_to_cif}...")
     charges = model.predict(features)
 
     # charges = np.round(charges, decimals=4)
@@ -1123,8 +1123,7 @@ def get_charges_multiple_onebyone(list_of_cifs, client_name='dummy', create_cif=
         data_all[i].info['_atom_site_charge'] = charges_adj
         if np.any(np.abs(charges_all[i] - charges_adj) > 0.2):
             print(
-                "WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality in file\n" + list_of_cifs[
-                    i])
+                f"WARNING: Some charges were adjusted by more than 0.2 to maintain neutrality in file \n{list_of_cifs[i]}")
 
     # * Write the output cif files
     if create_cif:
@@ -1228,8 +1227,7 @@ def get_charges_multiple_parallel(list_of_cifs, create_cif=False, path_to_output
         charges_adj = adjust_charge(charges_all[i])
         data_all[i].info['_atom_site_charge'] = charges_adj
         if np.any(np.abs(charges_all[i] - charges_adj) > 0.2):
-            print("WARNING: Some charges in {} were adjusted by more than 0.2 to maintain neutrality in file \n".format(
-                list_of_cifs[i]))
+            print(f"WARNING: Some charges in {list_of_cifs[i]} were adjusted by more than 0.2 to maintain neutrality in file \n")
 
     # * Write the output cif files
     if create_cif:

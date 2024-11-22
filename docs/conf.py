@@ -18,6 +18,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 import pacmof
+from pacmof._version import __version__
 
 
 # -- Project information -----------------------------------------------------
@@ -28,9 +29,9 @@ copyright = ("2020, Snurr Research Group, Northwestern University. Project struc
 author = 'Snurr Research Group, Northwestern University'
 
 # The short X.Y version
-version = ''
+version = __version__
 # The full version, including alpha/beta/rc tags
-release = ''
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------

@@ -5,7 +5,6 @@ import sys, os
 from setuptools import setup #, find_packages
 from setuptools.command.install import install
 from setuptools.command.develop import  develop
-import versioneer
 import subprocess
 # from icecream import ic
 import pandas as pd
@@ -14,7 +13,13 @@ import joblib
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from datetime import datetime
 
+# Format: YYYY.MM.DD
+__version__ = datetime.now().strftime("%Y.%m.%d")  # e.g., "2024.03.19"
+
+# Or if you prefer including more precision:
+# __version__ = datetime.now().strftime("%Y.%m.%d.%H%M")  # e.g., "2024.03.19.1423"
 
 short_description = __doc__.split("\n")
 
@@ -116,8 +121,8 @@ setup(
     description=short_description[0],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(cmdclass={'develop': PostDevelopCommand,'install': PostInstallCommand}), # This line adds the post install and post develop model sklearn compilation
+    version=__version__,
+    cmdclass={'develop': PostDevelopCommand, 'install': PostInstallCommand},
     license='BSD-3-Clause',
 
     # Which Python importable modules should be included when your package is installed
